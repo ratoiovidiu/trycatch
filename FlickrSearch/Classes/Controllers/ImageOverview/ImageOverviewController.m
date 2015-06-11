@@ -8,16 +8,17 @@
 
 #import "ImageOverviewController.h"
 
+#import "ImageOverviewView.h"
+
 @interface ImageOverviewController ()
 
 @end
 
 @implementation ImageOverviewController
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
-
-    self.view.backgroundColor = [UIColor redColor];
+- (void)loadView {
+    ImageOverviewView *pageView = [[ImageOverviewView alloc] initWithFrame:CGRectZero];
+    self.view = pageView;
 }
 
 @end

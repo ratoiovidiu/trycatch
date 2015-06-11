@@ -9,6 +9,7 @@
 #import "ImageOverviewController.h"
 
 #import "ImageOverviewView.h"
+#import "WebServiceManager.h"
 
 @interface ImageOverviewController ()
 
@@ -19,6 +20,12 @@
 - (void)loadView {
     ImageOverviewView *pageView = [[ImageOverviewView alloc] initWithFrame:CGRectZero];
     self.view = pageView;
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+
+    [[WebServiceManager shared] getPhotoListWithTag:@"Party" forPageNumber:1 usingCallback:NULL];
 }
 
 @end

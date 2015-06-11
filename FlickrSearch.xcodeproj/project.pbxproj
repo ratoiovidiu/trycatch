@@ -14,6 +14,8 @@
 		55DC7B2C1B2A13B000BF469D /* UIDevice+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 55DC7B2B1B2A13B000BF469D /* UIDevice+Additions.m */; };
 		55DC7B2F1B2A13CA00BF469D /* NSString+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 55DC7B2E1B2A13CA00BF469D /* NSString+Additions.m */; };
 		55DC7B321B2A191E00BF469D /* UIScreen+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 55DC7B311B2A191E00BF469D /* UIScreen+Additions.m */; };
+		55DC7B341B2A1A6A00BF469D /* ConstantsGeneral.m in Sources */ = {isa = PBXBuildFile; fileRef = 55DC7B331B2A1A6A00BF469D /* ConstantsGeneral.m */; };
+		55DC7B3D1B2A1C6100BF469D /* WebServiceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 55DC7B3C1B2A1C6100BF469D /* WebServiceManager.m */; };
 		55F837881B28BA8700CCAD61 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 55F837871B28BA8700CCAD61 /* main.m */; };
 		55F837931B28BA8700CCAD61 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 55F837921B28BA8700CCAD61 /* Images.xcassets */; };
 		55F837A21B28BA8700CCAD61 /* FlickrSearchTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 55F837A11B28BA8700CCAD61 /* FlickrSearchTests.m */; };
@@ -45,6 +47,10 @@
 		55DC7B2E1B2A13CA00BF469D /* NSString+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Additions.m"; sourceTree = "<group>"; };
 		55DC7B301B2A191E00BF469D /* UIScreen+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScreen+Additions.h"; sourceTree = "<group>"; };
 		55DC7B311B2A191E00BF469D /* UIScreen+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScreen+Additions.m"; sourceTree = "<group>"; };
+		55DC7B331B2A1A6A00BF469D /* ConstantsGeneral.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConstantsGeneral.m; sourceTree = "<group>"; };
+		55DC7B351B2A1A7900BF469D /* ConstantsGeneral.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ConstantsGeneral.h; sourceTree = "<group>"; };
+		55DC7B3B1B2A1C6100BF469D /* WebServiceManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebServiceManager.h; sourceTree = "<group>"; };
+		55DC7B3C1B2A1C6100BF469D /* WebServiceManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebServiceManager.m; sourceTree = "<group>"; };
 		55F837821B28BA8700CCAD61 /* FlickrSearch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlickrSearch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		55F837861B28BA8700CCAD61 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		55F837871B28BA8700CCAD61 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -91,6 +97,7 @@
 				55D6B3841B28C49F00F1D997 /* Categories */,
 				55D6B3851B28C49F00F1D997 /* Constants */,
 				55D6B3861B28C49F00F1D997 /* Controllers */,
+				55DC7B3A1B2A1C6100BF469D /* Managers */,
 				55D6B3871B28C49F00F1D997 /* Models */,
 				55D6B3881B28C49F00F1D997 /* Views */,
 			);
@@ -122,6 +129,8 @@
 		55D6B3851B28C49F00F1D997 /* Constants */ = {
 			isa = PBXGroup;
 			children = (
+				55DC7B351B2A1A7900BF469D /* ConstantsGeneral.h */,
+				55DC7B331B2A1A6A00BF469D /* ConstantsGeneral.m */,
 			);
 			path = Constants;
 			sourceTree = "<group>";
@@ -165,6 +174,15 @@
 				55DC7B281B2A111800BF469D /* ImageOverviewView.m */,
 			);
 			path = ImageOverview;
+			sourceTree = "<group>";
+		};
+		55DC7B3A1B2A1C6100BF469D /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				55DC7B3B1B2A1C6100BF469D /* WebServiceManager.h */,
+				55DC7B3C1B2A1C6100BF469D /* WebServiceManager.m */,
+			);
+			path = Managers;
 			sourceTree = "<group>";
 		};
 		55F837791B28BA8700CCAD61 = {
@@ -365,11 +383,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				55DC7B341B2A1A6A00BF469D /* ConstantsGeneral.m in Sources */,
 				55DC7B321B2A191E00BF469D /* UIScreen+Additions.m in Sources */,
 				55D6B38A1B28C49F00F1D997 /* AppDelegate.m in Sources */,
 				55F837881B28BA8700CCAD61 /* main.m in Sources */,
 				55D6B38F1B28C7AC00F1D997 /* ImageOverviewController.m in Sources */,
 				55DC7B2C1B2A13B000BF469D /* UIDevice+Additions.m in Sources */,
+				55DC7B3D1B2A1C6100BF469D /* WebServiceManager.m in Sources */,
 				55DC7B291B2A111800BF469D /* ImageOverviewView.m in Sources */,
 				55DC7B2F1B2A13CA00BF469D /* NSString+Additions.m in Sources */,
 			);

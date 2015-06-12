@@ -40,11 +40,12 @@
         NSString *farm = [NSString emptyIfNil:[description objectForKey:kFLICKR_FARM_KEY]];
         NSString *serverId = [NSString emptyIfNil:[description objectForKey:kFLICKR_SERVER_KEY]];
         NSString *photoId = [NSString emptyIfNil:[description objectForKey:kFLICKR_ID_KEY]];
-        NSString *secret = [NSString emptyIfNil:[description objectForKey:kFLICKR_SERVER_KEY]];
+        NSString *secret = [NSString emptyIfNil:[description objectForKey:kFLICKR_SECRET_KEY]];
+
+        self.title = [NSString emptyIfNil:[description objectForKey:kFLICKR_TITLE_KEY]];
 
         //    https://farm{farm-id}.staticflickr.com/{server-id}/{id}_{secret}_[mstzb].jpg
         //    https://farm{farm-id}.staticflickr.com/{server-id}/{id}_{secret}.jpg
-        self.title = [NSString emptyIfNil:[description objectForKey:kFLICKR_FARM_KEY]];
         self.thumbUrlString = [NSString stringWithFormat:@"https://farm%@.staticflickr.com/%@/%@_%@_q.jpg", farm, serverId, photoId, secret];
         self.smallUrlString = [NSString stringWithFormat:@"https://farm%@.staticflickr.com/%@/%@_%@_n.jpg", farm, serverId, photoId, secret];
         self.largeUrlString = [NSString stringWithFormat:@"https://farm%@.staticflickr.com/%@/%@_%@_h.jpg", farm, serverId, photoId, secret];

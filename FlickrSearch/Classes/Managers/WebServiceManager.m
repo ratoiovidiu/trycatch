@@ -163,7 +163,7 @@
 
         if ((0 != arrPhotoList.count) && (nil != currentPage) && (nil != totalPages)) {
             return [NSDictionary dictionaryWithObjectsAndKeys:
-                    arrPhotoList, @"arrPhotoList",
+                    [NSArray arrayWithArray:arrPhotoList], @"arrPhotoList",
                     currentPage, @"currentPage",
                     totalPages, @"totalPages",
                     nil];

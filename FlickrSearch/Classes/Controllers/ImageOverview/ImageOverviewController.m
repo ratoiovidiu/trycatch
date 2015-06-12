@@ -11,6 +11,8 @@
 #import "ImageOverviewView.h"
 #import "WebServiceManager.h"
 
+#import "PhotoInfo.h"
+
 @interface ImageOverviewController ()
 
 @end
@@ -27,6 +29,19 @@
 
     [[WebServiceManager shared] getPhotoListWithTag:@"Party" forPageNumber:1 usingCallback:^(id response, NSError *error) {
         NSLog(@"TODO * %@", error);
+        if ((nil == error) && (YES == [response isKindOfClass:[NSDictionary class]])) {
+            // NSNumber *currentPage = [response objectForKey:@"currentPage"];
+            // NSNumber *totalPages = [response objectForKey:@"totalPages"];
+            NSArray *arrPhotoList = [response objectForKey:@"arrPhotoList"];
+            for (PhotoInfo *photoInfo in arrPhotoList) {
+                NSLog(@"Title: '%@' \n * %@ \n * %@ \n * %@ \n * %@\n\n",
+                      photoInfo.title,
+                      photoInfo.thumbUrlString,
+                      photoInfo.smallUrlString,
+                      photoInfo.largeUrlString,
+                      photoInfo.defaultUrlString);
+            }
+        }
     }];
 }
 

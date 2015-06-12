@@ -55,6 +55,10 @@ Size classes:
     t   thumbnail, 100 on longest side
     m   small, 240 on longest side
     n   small, 320 on longest side
+    h   large 1600, 1600 on longest side (†)
+    k   large 2048, 2048 on longest side (†)
+
+(†) Those photos only exist after March 1st 2012.    
 
 Example:
     https://farm1.staticflickr.com/552/18044772823_ac0f526788_n.jpg

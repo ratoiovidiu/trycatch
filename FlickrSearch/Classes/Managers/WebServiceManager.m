@@ -8,7 +8,9 @@
 
 #import "WebServiceManager.h"
 
+#import "PhotoInfo.h"
 #import "ConstantsGeneral.h"
+
 #import <AFNetworking/AFNetworking.h>
 
 @interface WebServiceManager()
@@ -36,6 +38,7 @@
 - (void)getPhotoListWithTag:(NSString *)text forPageNumber:(NSInteger)pageNumber usingCallback:(void (^)(id response, NSError *error))completionBlock {
     NSString *urlString = [NSString stringWithFormat:@"https://api.flickr.com/services/rest/?api_key=%@&method=flickr.photos.search&format=json&text=%@&per_page=10&page=%ld", FSApiKey, text, (long)pageNumber];
 
+    __weak typeof(self) weakSelf = self;
     NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:urlString]];
     AFHTTPRequestOperation *imageRequestOperation = [[AFHTTPRequestOperation alloc] initWithRequest:urlRequest];
     imageRequestOperation.responseSerializer = [AFHTTPResponseSerializer serializer];
@@ -97,10 +100,27 @@
             error = [NSError errorWithDomain:@"api.getPhotoListWithTag.WebServiceManager" code:-1000 userInfo:userInfo];
         }
 
+        NSDictionary *processedResponse = nil;
         if (nil != parsedResponse) {
-            NSLog(@"TODO * %@", parsedResponse);
-        } else {
+            processedResponse = [weakSelf processFlickrPhotoList:parsedResponse];
+            id objError = [processedResponse objectForKey:@"error"];
 
+            if (YES == [objError isKindOfClass:[NSError class]]) {
+                processedResponse = nil;
+                error = objError;
+            } else {
+                error = nil;
+            }
+        }
+
+        if ((nil == processedResponse) && (nil == error)) {
+            NSString *errorString = @"Generic API Error";
+            NSDictionary *userInfo = @{NSLocalizedDescriptionKey: errorString};
+            error = [NSError errorWithDomain:@"api.getPhotoListWithTag.WebServiceManager" code:-1001 userInfo:userInfo];
+        }
+
+        if (completionBlock) {
+            completionBlock(processedResponse, error);
         }
 
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -109,6 +129,56 @@
         }
     }];
     [self.operationQueue addOperation:imageRequestOperation];
+}
+
+#pragma mark - Private Methods
+
+- (NSDictionary *)processFlickrPhotoList:(NSDictionary *)rawResponse {
+    if (YES == [rawResponse isKindOfClass:[NSDictionary class]]) {
+
+        NSNumber *currentPage = nil;
+        NSNumber *totalPages = nil;
+        NSMutableArray *arrPhotoList = [NSMutableArray array];
+
+        id objResponse = [rawResponse objectForKey:@"photos"];
+        if (YES == [objResponse isKindOfClass:[NSDictionary class]]) {
+            NSDictionary *rawPhotoList = objResponse;
+            id objPageNo = [rawPhotoList objectForKey:@"page"];
+            if (YES == [objPageNo isKindOfClass:[NSNumber class]]) {
+                currentPage = objPageNo;
+            }
+
+            id objTotalPages = [rawPhotoList objectForKey:@"pages"];
+            if (YES == [objTotalPages isKindOfClass:[NSNumber class]]) {
+                totalPages = objTotalPages;
+            }
+
+            id objPhotoList = [rawPhotoList objectForKey:@"photo"];
+            if (YES == [objPhotoList isKindOfClass:[NSArray class]]) {
+                for (id photoDescription in objPhotoList) {
+                    [arrPhotoList addObject:[[PhotoInfo alloc] initWithFlickrDescription:photoDescription]];
+                }
+            }
+        }
+
+        if ((0 != arrPhotoList.count) && (nil != currentPage) && (nil != totalPages)) {
+            return [NSDictionary dictionaryWithObjectsAndKeys:
+                    arrPhotoList, @"arrPhotoList",
+                    currentPage, @"currentPage",
+                    totalPages, @"totalPages",
+                    nil];
+        }
+    }
+
+    // RETURN ERROR IF EXECUTION REACHES HERE
+    NSString *errorString = @"Failed to parse received data";
+    NSDictionary *userInfo = @{NSLocalizedDescriptionKey: errorString};
+    NSError *error = [NSError errorWithDomain:@"api.getPhotoListWithTag.WebServiceManager" code:-1002 userInfo:userInfo];
+
+    return [NSDictionary dictionaryWithObjectsAndKeys:
+            error, @"error",
+            nil];
+
 }
 
 @end

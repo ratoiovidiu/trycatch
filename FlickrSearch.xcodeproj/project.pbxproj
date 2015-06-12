@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		552C6D131B2AFDBF00093C9F /* PhotoInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 552C6D121B2AFDBF00093C9F /* PhotoInfo.m */; };
 		55D6B38A1B28C49F00F1D997 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 55D6B3831B28C49F00F1D997 /* AppDelegate.m */; };
 		55D6B38B1B28C49F00F1D997 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55D6B3891B28C49F00F1D997 /* LaunchScreen.xib */; };
 		55D6B38F1B28C7AC00F1D997 /* ImageOverviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 55D6B38E1B28C7AC00F1D997 /* ImageOverviewController.m */; };
@@ -34,6 +35,8 @@
 
 /* Begin PBXFileReference section */
 		2596CD4BDEC3B2DA4237F68C /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		552C6D111B2AFDBF00093C9F /* PhotoInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoInfo.h; sourceTree = "<group>"; };
+		552C6D121B2AFDBF00093C9F /* PhotoInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoInfo.m; sourceTree = "<group>"; };
 		55D6B3821B28C49F00F1D997 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		55D6B3831B28C49F00F1D997 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		55D6B3891B28C49F00F1D997 /* LaunchScreen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LaunchScreen.xib; sourceTree = "<group>"; };
@@ -146,6 +149,8 @@
 		55D6B3871B28C49F00F1D997 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				552C6D111B2AFDBF00093C9F /* PhotoInfo.h */,
+				552C6D121B2AFDBF00093C9F /* PhotoInfo.m */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -389,6 +394,7 @@
 				55F837881B28BA8700CCAD61 /* main.m in Sources */,
 				55D6B38F1B28C7AC00F1D997 /* ImageOverviewController.m in Sources */,
 				55DC7B2C1B2A13B000BF469D /* UIDevice+Additions.m in Sources */,
+				552C6D131B2AFDBF00093C9F /* PhotoInfo.m in Sources */,
 				55DC7B3D1B2A1C6100BF469D /* WebServiceManager.m in Sources */,
 				55DC7B291B2A111800BF469D /* ImageOverviewView.m in Sources */,
 				55DC7B2F1B2A13CA00BF469D /* NSString+Additions.m in Sources */,

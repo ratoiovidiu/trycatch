@@ -25,7 +25,9 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
 
-    [[WebServiceManager shared] getPhotoListWithTag:@"Party" forPageNumber:1 usingCallback:NULL];
+    [[WebServiceManager shared] getPhotoListWithTag:@"Party" forPageNumber:1 usingCallback:^(id response, NSError *error) {
+        NSLog(@"TODO * %@", error);
+    }];
 }
 
 @end

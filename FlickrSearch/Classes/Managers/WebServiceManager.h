@@ -12,6 +12,6 @@
 
 + (WebServiceManager *)shared;
 
-- (void)getPhotoListWithTag:(NSString *)text forPageNumber:(NSInteger)pageNumber usingCallback:(void (^)(id response, NSError *error))callback;
+- (void)getPhotoListWithTag:(NSString *)text forPageNumber:(NSInteger)pageNumber usingCallback:(void (^)(id response, NSError *error))completionBlock;
 
 @end

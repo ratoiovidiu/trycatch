@@ -27,7 +27,10 @@
 - (CGSize)textSizeWithFont:(UIFont*)font {
     CGSize result = CGSizeZero;
     if (([[[UIDevice currentDevice] systemVersion] compare:@"7.0" options:NSNumericSearch] == NSOrderedAscending)) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
         result = [self sizeWithFont:font];
+#pragma clang diagnostic pop
     } else {
         result = [self sizeWithAttributes:@{NSFontAttributeName:font}];
     }
@@ -41,8 +44,10 @@
 - (CGSize)textSizeWithFont:(UIFont*)font constrainedToSize:(CGSize)constrainedSize {
     CGSize result = CGSizeZero;
     if (([[[UIDevice currentDevice] systemVersion] compare:@"7.0" options:NSNumericSearch] == NSOrderedAscending)) {
-        result = [self sizeWithFont:font
-                  constrainedToSize:constrainedSize];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+        result = [self sizeWithFont:font constrainedToSize:constrainedSize];
+#pragma clang diagnostic pop
     } else {
         result = [self boundingRectWithSize:constrainedSize
                                     options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading

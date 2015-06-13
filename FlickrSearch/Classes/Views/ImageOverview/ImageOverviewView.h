@@ -8,14 +8,22 @@
 
 #import <UIKit/UIKit.h>
 
+#import "CustomImageView.h"
 #import "UIDevice+Additions.h"
 
-#define kLAYOUT_ITEM_WIDTH                    (IS_IPAD ? 200.0 : 100.0)
-#define kLAYOUT_ITEM_HEIGHT                   (kLAYOUT_ITEM_WIDTH)
+typedef NS_ENUM(NSInteger, ImageOverviewLayoutType) {
+    LT_ListOnly = 0,
+    LT_Details
+};
+
 
 @interface ImageOverviewView : UIView
 
+@property (nonatomic, assign) ImageOverviewLayoutType layoutType;
+
 @property (nonatomic, strong) UICollectionView *cvImageOverview;
+@property (nonatomic, strong) UIButton *btnCloseDetailsLayout;
+@property (nonatomic, strong) CustomImageView *ivFullImage;
 
 - (instancetype)initWithFrame:(CGRect)frame;
 

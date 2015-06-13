@@ -14,8 +14,6 @@
 #import "ImageOverviewView.h"
 #import "ImageCollectionViewCell.h"
 
-#import "ImageDetailsController.h"
-
 #define kIMAGE_COLLECTION_VIEW_CELL_KEY @"IMAGE_COLLECTION_VIEW_CELL_KEY"
 
 @interface ImageOverviewController () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
@@ -128,11 +126,6 @@
 
     if (collectionView == pageView.cvImageOverview) {
         numberOfItems = self.imageDataElementsList.count;
-
-        if (self.imageDataCurrentPage < self.imageDataTotalPages) {
-            // ADD ONE EXTRA ROW IN CASE OF "MORE DATA AVAILABLE"
-            numberOfItems++;
-        }
     }
 
     return numberOfItems;
@@ -144,16 +137,8 @@
 
     if (collectionView == pageView.cvImageOverview) {
         if (self.imageDataCurrentPage < self.imageDataTotalPages) {
-            if ((0 != self.imageDataElementsList.count) && (ABS([collectionView numberOfItemsInSection:indexPath.section] - indexPath.row) < 10)) {
+            if ((0 != self.imageDataElementsList.count) && (ABS([collectionView numberOfItemsInSection:indexPath.section] - indexPath.row) < 20)) {
                 [self downloadLiveDataForPage:self.imageDataCurrentPage];
-            }
-
-            if (indexPath.row == ([collectionView numberOfItemsInSection:indexPath.section] - 1)) {
-                ImageCollectionViewCell *customCell = [collectionView dequeueReusableCellWithReuseIdentifier:kIMAGE_COLLECTION_VIEW_CELL_KEY
-                                                                                                forIndexPath:indexPath];
-                [customCell.ivCustom displayImageWithInfo:nil forSize:IT_Loading];
-
-                cell = customCell;
             }
         }
 
@@ -215,9 +200,8 @@
         if (indexPath.row < self.imageDataElementsList.count) {
             id imageInfo = [self.imageDataElementsList objectAtIndex:indexPath.row];
             if (imageInfo && (YES == [imageInfo isKindOfClass:[ImageDataModel class]])) {
-                ImageDetailsController *ctrl = [[ImageDetailsController alloc] init];
-                [ctrl displayImage:imageInfo];
-                [self.navigationController pushViewController:ctrl animated:YES];
+                pageView.layoutType = LT_Details;
+                [pageView.ivFullImage displayImageWithInfo:imageInfo forSize:IT_Large];
             }
         }
     }

@@ -16,8 +16,6 @@
 		5592B6781B2CBDA200B3F263 /* btn_close@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5592B6751B2CBDA200B3F263 /* btn_close@2x.png */; };
 		5592B6791B2CBDA200B3F263 /* btn_close@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5592B6761B2CBDA200B3F263 /* btn_close@3x.png */; };
 		5597F5E21B2C2FA300FC8ECC /* CustomImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5597F5E11B2C2FA300FC8ECC /* CustomImageView.m */; };
-		5597F5E61B2C38DD00FC8ECC /* ImageDetailsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5597F5E51B2C38DD00FC8ECC /* ImageDetailsController.m */; };
-		5597F5EA1B2C390600FC8ECC /* ImageDetailsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5597F5E91B2C390600FC8ECC /* ImageDetailsView.m */; };
 		55D6B38A1B28C49F00F1D997 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 55D6B3831B28C49F00F1D997 /* AppDelegate.m */; };
 		55D6B38B1B28C49F00F1D997 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55D6B3891B28C49F00F1D997 /* LaunchScreen.xib */; };
 		55D6B38F1B28C7AC00F1D997 /* ImageOverviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 55D6B38E1B28C7AC00F1D997 /* ImageOverviewController.m */; };
@@ -57,10 +55,6 @@
 		5592B6761B2CBDA200B3F263 /* btn_close@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn_close@3x.png"; sourceTree = "<group>"; };
 		5597F5E01B2C2FA300FC8ECC /* CustomImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomImageView.h; sourceTree = "<group>"; };
 		5597F5E11B2C2FA300FC8ECC /* CustomImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomImageView.m; sourceTree = "<group>"; };
-		5597F5E41B2C38DD00FC8ECC /* ImageDetailsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageDetailsController.h; sourceTree = "<group>"; };
-		5597F5E51B2C38DD00FC8ECC /* ImageDetailsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageDetailsController.m; sourceTree = "<group>"; };
-		5597F5E81B2C390600FC8ECC /* ImageDetailsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageDetailsView.h; sourceTree = "<group>"; };
-		5597F5E91B2C390600FC8ECC /* ImageDetailsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageDetailsView.m; sourceTree = "<group>"; };
 		55D6B3821B28C49F00F1D997 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		55D6B3831B28C49F00F1D997 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		55D6B3891B28C49F00F1D997 /* LaunchScreen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LaunchScreen.xib; sourceTree = "<group>"; };
@@ -139,24 +133,6 @@
 			path = CustomImageView;
 			sourceTree = "<group>";
 		};
-		5597F5E31B2C38C700FC8ECC /* ImageDetails */ = {
-			isa = PBXGroup;
-			children = (
-				5597F5E41B2C38DD00FC8ECC /* ImageDetailsController.h */,
-				5597F5E51B2C38DD00FC8ECC /* ImageDetailsController.m */,
-			);
-			path = ImageDetails;
-			sourceTree = "<group>";
-		};
-		5597F5E71B2C38EF00FC8ECC /* ImageDetails */ = {
-			isa = PBXGroup;
-			children = (
-				5597F5E81B2C390600FC8ECC /* ImageDetailsView.h */,
-				5597F5E91B2C390600FC8ECC /* ImageDetailsView.m */,
-			);
-			path = ImageDetails;
-			sourceTree = "<group>";
-		};
 		55D6B3801B28C49F00F1D997 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
@@ -205,7 +181,6 @@
 		55D6B3861B28C49F00F1D997 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				5597F5E31B2C38C700FC8ECC /* ImageDetails */,
 				55D6B38C1B28C78A00F1D997 /* ImageOverview */,
 			);
 			path = Controllers;
@@ -224,7 +199,6 @@
 			isa = PBXGroup;
 			children = (
 				5597F5DF1B2C2F8F00FC8ECC /* CustomImageView */,
-				5597F5E71B2C38EF00FC8ECC /* ImageDetails */,
 				55DC7B261B2A110400BF469D /* ImageOverview */,
 			);
 			path = Views;
@@ -474,10 +448,8 @@
 				552C6D131B2AFDBF00093C9F /* ImageDataModel.m in Sources */,
 				55DC7B3D1B2A1C6100BF469D /* WebServiceManager.m in Sources */,
 				555B5C8A1B2B7AA3009D82D8 /* ImageCollectionViewCell.m in Sources */,
-				5597F5E61B2C38DD00FC8ECC /* ImageDetailsController.m in Sources */,
 				55DC7B291B2A111800BF469D /* ImageOverviewView.m in Sources */,
 				55DC7B2F1B2A13CA00BF469D /* NSString+Additions.m in Sources */,
-				5597F5EA1B2C390600FC8ECC /* ImageDetailsView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

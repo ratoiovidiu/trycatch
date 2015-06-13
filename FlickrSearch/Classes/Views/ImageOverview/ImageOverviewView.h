@@ -17,4 +17,6 @@
 
 @property (nonatomic, strong) UICollectionView *cvImageOverview;
 
+- (instancetype)initWithFrame:(CGRect)frame;
+
 @end

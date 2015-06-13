@@ -14,6 +14,8 @@
 #import "ImageOverviewView.h"
 #import "ImageCollectionViewCell.h"
 
+#import "ImageDetailsController.h"
+
 #define kIMAGE_COLLECTION_VIEW_CELL_KEY @"IMAGE_COLLECTION_VIEW_CELL_KEY"
 
 @interface ImageOverviewController () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
@@ -108,37 +110,6 @@
     [pageView.cvImageOverview reloadData];
 }
 
-#pragma mark - UICollectionViewDelegateFlowLayout
-
-- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
-
-    if (collectionViewLayout && (YES == [collectionViewLayout isKindOfClass:[UICollectionViewFlowLayout class]])) {
-        UICollectionViewFlowLayout *flowLayout = (UICollectionViewFlowLayout *)collectionViewLayout;
-
-        NSInteger itemCount = [collectionView numberOfItemsInSection:section];
-        if (1 == itemCount) {
-            CGFloat interItemSpacing = [flowLayout minimumInteritemSpacing];
-            CGSize itemSize = flowLayout.itemSize;
-
-            CGFloat totalWidth = round(itemCount * itemSize.width + (itemCount - 1) * interItemSpacing);
-            CGFloat totalHeight = round(itemCount * itemSize.height + (itemCount - 1) * interItemSpacing);
-
-            CGFloat leftPadding = round(MAX(0.0, ((CGRectGetWidth (collectionView.frame) - totalWidth ) / 2.0)));
-            CGFloat topPadding  = round(MAX(0.0, ((CGRectGetHeight(collectionView.frame) - totalHeight) / 2.0)));
-
-            return UIEdgeInsetsMake(topPadding, leftPadding, 0.0, 0.0);
-        } else {
-            return flowLayout.sectionInset;
-        }
-    }
-
-    return UIEdgeInsetsMake(0.0, 0.0, 0.0, 0.0);
-}
-
-- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-
-}
-
 #pragma mark - UICollectionViewDataSource
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
@@ -209,6 +180,49 @@
     }
 
     return cell;
+}
+
+#pragma mark - UICollectionViewDelegateFlowLayout
+
+- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
+
+    if (collectionViewLayout && (YES == [collectionViewLayout isKindOfClass:[UICollectionViewFlowLayout class]])) {
+        UICollectionViewFlowLayout *flowLayout = (UICollectionViewFlowLayout *)collectionViewLayout;
+
+        NSInteger itemCount = [collectionView numberOfItemsInSection:section];
+        if (1 == itemCount) {
+            CGFloat interItemSpacing = [flowLayout minimumInteritemSpacing];
+            CGSize itemSize = flowLayout.itemSize;
+
+            CGFloat totalWidth = round(itemCount * itemSize.width + (itemCount - 1) * interItemSpacing);
+            CGFloat totalHeight = round(itemCount * itemSize.height + (itemCount - 1) * interItemSpacing);
+
+            CGFloat leftPadding = round(MAX(0.0, ((CGRectGetWidth (collectionView.frame) - totalWidth ) / 2.0)));
+            CGFloat topPadding  = round(MAX(0.0, ((CGRectGetHeight(collectionView.frame) - totalHeight) / 2.0)));
+
+            return UIEdgeInsetsMake(topPadding, leftPadding, 0.0, 0.0);
+        } else {
+            return flowLayout.sectionInset;
+        }
+    }
+
+    return UIEdgeInsetsMake(0.0, 0.0, 0.0, 0.0);
+}
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    ImageOverviewView *pageView = (ImageOverviewView *)self.view;
+
+    if (collectionView == pageView.cvImageOverview) {
+        if (indexPath.row < self.imageDataElementsList.count) {
+            id imageInfo = [self.imageDataElementsList objectAtIndex:indexPath.row];
+            if (imageInfo && (YES == [imageInfo isKindOfClass:[ImageDataModel class]])) {
+                // TODO *
+                ImageDetailsController *ctrl = [[ImageDetailsController alloc] init];
+                [ctrl displayImage:imageInfo];
+                [self.navigationController pushViewController:ctrl animated:YES];
+            }
+        }
+    }
 }
 
 @end

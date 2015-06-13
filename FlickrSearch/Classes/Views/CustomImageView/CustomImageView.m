@@ -64,6 +64,31 @@
     }
 
     if (nil != url) {
+
+        UIImage *smallImage = nil;
+
+        if (IT_Large == sizeType) {
+            if (nil == smallImage) {
+                NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:imageInfo.smallUrlString]];
+                [request addValue:@"image/*" forHTTPHeaderField:@"Accept"];
+                smallImage = [[[self.ivPhoto class] sharedImageCache] cachedImageForRequest:request];
+            }
+
+            if (nil == smallImage) {
+                NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:imageInfo.thumbUrlString]];
+                [request addValue:@"image/*" forHTTPHeaderField:@"Accept"];
+                smallImage = [[[self.ivPhoto class] sharedImageCache] cachedImageForRequest:request];
+            }
+        }
+
+        if (smallImage) {
+            self.ivPhoto.hidden = NO;
+            self.ivPhoto.image = smallImage;
+
+            self.aivLoading.hidden = YES;
+            [self.aivLoading stopAnimating];
+        }
+
         __weak typeof(self) weakSelf = self;
         NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
         [request addValue:@"image/*" forHTTPHeaderField:@"Accept"];

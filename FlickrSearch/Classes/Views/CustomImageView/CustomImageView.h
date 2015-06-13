@@ -12,6 +12,8 @@
 
 @interface CustomImageView : UIView
 
+@property (nonatomic, assign) BOOL zoomEnabled;
+
 - (instancetype)initWithFrame:(CGRect)frame;
 - (void)displayImageWithInfo:(ImageDataModel *)imageInfo forSize:(ImageType)sizeType;
 

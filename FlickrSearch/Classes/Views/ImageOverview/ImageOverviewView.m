@@ -23,6 +23,7 @@
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
+        self.clipsToBounds = YES;
         self.backgroundColor = [UIColor clearColor];
 
         UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];

@@ -15,11 +15,12 @@
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        // TODO *
+        self.clipsToBounds = YES;
         self.backgroundColor = [UIColor clearColor];
 
         _ivCustom = [[CustomImageView alloc] initWithFrame:CGRectZero];
         _ivCustom.backgroundColor = [UIColor clearColor];
+        _ivCustom.zoomEnabled = YES;
         [self addSubview:_ivCustom];
     }
 

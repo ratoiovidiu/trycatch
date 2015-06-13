@@ -27,6 +27,7 @@
     [navCtrl setNavigationBarHidden:YES];
 
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    self.window.backgroundColor = [UIColor whiteColor];
     self.window.rootViewController = navCtrl;
     [self.window makeKeyAndVisible];
 

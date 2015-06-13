@@ -10,10 +10,12 @@
 
 #import "UIImageView+AFNetworking.h"
 
-@interface CustomImageView ()
+@interface CustomImageView () <UIScrollViewDelegate>
 
-@property (nonatomic, strong) UIImageView *ivPhoto;
-@property (nonatomic, strong) UIActivityIndicatorView *aivLoading;
+@property (nonatomic, strong) UIScrollView *scrollView;
+@property (nonatomic, strong) UIImageView *imageView;
+
+@property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
 
 @end
 
@@ -22,24 +24,63 @@
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        _ivPhoto = [[UIImageView alloc] initWithFrame:CGRectZero];
-        _ivPhoto.contentMode = UIViewContentModeScaleAspectFit;
-        _ivPhoto.backgroundColor = [UIColor clearColor];
-        [self addSubview:_ivPhoto];
+        self.clipsToBounds = YES;
+        self.backgroundColor = [UIColor clearColor];
 
-        _aivLoading = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-        _aivLoading.backgroundColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.5];
-        _aivLoading.color = [UIColor blackColor];
-        [self addSubview:_aivLoading];
+        _scrollView = [[UIScrollView alloc] initWithFrame:CGRectZero];
+        _scrollView.backgroundColor = [UIColor clearColor];
+        _scrollView.contentMode = UIViewContentModeCenter;
+        _scrollView.bounces = NO;
+        _scrollView.delegate = self;
+        [self addSubview:_scrollView];
+
+        _imageView = [[UIImageView alloc] initWithFrame:CGRectZero];
+        _imageView.contentMode = UIViewContentModeScaleAspectFit;
+        _imageView.backgroundColor = [UIColor clearColor];
+        [_scrollView addSubview:_imageView];
+
+        _activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+        _activityIndicator.backgroundColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.5];
+        _activityIndicator.color = [UIColor blackColor];
+        [self addSubview:_activityIndicator];
+
+        _zoomEnabled = YES;
+        self.zoomEnabled = NO;
     }
 
     return self;
 }
 
+- (void)setZoomEnabled:(BOOL)zoomEnabled {
+    if (_zoomEnabled != zoomEnabled) {
+        for (UIGestureRecognizer *recognizer in _scrollView.gestureRecognizers) {
+            [_scrollView removeGestureRecognizer:recognizer];
+        }
+        _scrollView.userInteractionEnabled = NO;
+
+        if (zoomEnabled) {
+            // ADD GESTURE RECOGNIZER
+            UITapGestureRecognizer *doubleTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scrollViewDoubleTapped:)];
+            doubleTapRecognizer.numberOfTapsRequired = 2;
+            doubleTapRecognizer.numberOfTouchesRequired = 1;
+            [_scrollView addGestureRecognizer:doubleTapRecognizer];
+
+            _scrollView.userInteractionEnabled = YES;
+        }
+    }
+
+    _zoomEnabled = zoomEnabled;
+}
+
 - (void)displayImageWithInfo:(ImageDataModel *)imageInfo forSize:(ImageType)sizeType {
-    self.ivPhoto.hidden = YES;
-    self.aivLoading.hidden = NO;
-    [self.aivLoading startAnimating];
+    _scrollView.contentInset = UIEdgeInsetsZero;
+    _scrollView.minimumZoomScale = 1.0;
+    _scrollView.maximumZoomScale = 1.0;
+    _scrollView.zoomScale = 1.0;
+
+    _scrollView.hidden = YES;
+    _activityIndicator.hidden = NO;
+    [_activityIndicator startAnimating];
 
     NSURL *url = nil;
     switch (sizeType) {
@@ -71,48 +112,125 @@
             if (nil == smallImage) {
                 NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:imageInfo.smallUrlString]];
                 [request addValue:@"image/*" forHTTPHeaderField:@"Accept"];
-                smallImage = [[[self.ivPhoto class] sharedImageCache] cachedImageForRequest:request];
+                smallImage = [[[_imageView class] sharedImageCache] cachedImageForRequest:request];
             }
 
             if (nil == smallImage) {
                 NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:imageInfo.thumbUrlString]];
                 [request addValue:@"image/*" forHTTPHeaderField:@"Accept"];
-                smallImage = [[[self.ivPhoto class] sharedImageCache] cachedImageForRequest:request];
+                smallImage = [[[_imageView class] sharedImageCache] cachedImageForRequest:request];
             }
         }
 
         if (smallImage) {
-            self.ivPhoto.hidden = NO;
-            self.ivPhoto.image = smallImage;
+            _scrollView.hidden = NO;
+            _imageView.image = smallImage;
 
-            self.aivLoading.hidden = YES;
-            [self.aivLoading stopAnimating];
+            _activityIndicator.hidden = YES;
+            [_activityIndicator stopAnimating];
         }
 
         __weak typeof(self) weakSelf = self;
         NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
         [request addValue:@"image/*" forHTTPHeaderField:@"Accept"];
-        [self.ivPhoto setImageWithURLRequest:request
-                            placeholderImage:nil
-                                     success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-                                         weakSelf.ivPhoto.hidden = NO;
-                                         weakSelf.ivPhoto.image = image;
+        [_imageView setImageWithURLRequest:request
+                          placeholderImage:nil
+                                   success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+                                       [weakSelf.activityIndicator stopAnimating];
+                                       weakSelf.activityIndicator.hidden = YES;
+                                       weakSelf.scrollView.hidden = NO;
 
-                                         weakSelf.aivLoading.hidden = YES;
-                                         [weakSelf.aivLoading stopAnimating];
-                                     }
-                                     failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-                                         weakSelf.aivLoading.hidden = YES;
-                                         [weakSelf.aivLoading stopAnimating];
-                                     }];
+                                       weakSelf.imageView.image = image;
+                                       weakSelf.imageView.frame = weakSelf.bounds;
+                                       [weakSelf resetZoomLevel];
+                                   }
+                                   failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+                                       weakSelf.activityIndicator.hidden = YES;
+                                       [weakSelf.activityIndicator stopAnimating];
+                                   }];
     }
 }
 
 - (void)layoutSubviews {
     [super layoutSubviews];
+    CGRect frame = self.bounds;
 
-    _ivPhoto.frame = self.bounds;
-    _aivLoading.frame = self.bounds;
+    _imageView.frame = frame;
+    _scrollView.frame = frame;
+    _activityIndicator.frame = frame;
+
+    _scrollView.contentSize = _imageView.bounds.size;
+    _scrollView.contentInset = UIEdgeInsetsZero;
+    _scrollView.minimumZoomScale = 1.0;
+    _scrollView.maximumZoomScale = 1.0;
+    _scrollView.zoomScale = 1.0;
+
+    [self resetZoomLevel];
+}
+
+- (void)scrollViewDoubleTapped:(UITapGestureRecognizer*)recognizer {
+    if(_scrollView.zoomScale >= _scrollView.maximumZoomScale){
+        [_scrollView setZoomScale:_scrollView.minimumZoomScale animated:YES];
+    } else {
+        [_scrollView setZoomScale:(_scrollView.zoomScale + (_scrollView.maximumZoomScale - _scrollView.minimumZoomScale) / 3.0) animated:YES];
+    }
+}
+
+- (void)resetZoomLevel {
+    _scrollView.frame = self.bounds;
+    _scrollView.contentSize = _imageView.bounds.size;
+
+    CGRect scrollViewFrame = _scrollView.frame;
+    CGFloat scaleWidth = scrollViewFrame.size.width / _scrollView.contentSize.width;
+    CGFloat scaleHeight = scrollViewFrame.size.height / _scrollView.contentSize.height;
+
+    CGFloat minScale = MIN(scaleWidth, scaleHeight);
+
+    if (minScale <= 1) {
+        _scrollView.contentInset = UIEdgeInsetsZero;
+
+        _scrollView.minimumZoomScale = minScale;
+        _scrollView.maximumZoomScale = 4.0;
+        _scrollView.zoomScale = minScale;
+        _scrollView.scrollEnabled = NO;
+
+        CGSize scrollViewSize = _scrollView.bounds.size;
+        CGSize scrollViewContentSize = _scrollView.contentSize;
+
+        UIEdgeInsets edgeInset = UIEdgeInsetsZero;
+        edgeInset.left = MAX(0.0, round((scrollViewSize.width - scrollViewContentSize.width) / 2.0));
+        edgeInset.right = MAX(0.0, round((scrollViewSize.width - scrollViewContentSize.width) / 2.0));
+        edgeInset.top = MAX(0.0, round((scrollViewSize.height - scrollViewContentSize.height) / 2.0));
+        edgeInset.bottom = MAX(0.0, round((scrollViewSize.height - scrollViewContentSize.height) / 2.0));
+        _scrollView.contentInset = edgeInset;
+    }
+}
+
+- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
+    return _imageView;
+}
+
+- (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(CGFloat)scale {
+    CGSize scrollViewSize = _scrollView.bounds.size;
+    CGSize scrollViewContentSize = _scrollView.contentSize;
+
+    UIEdgeInsets edgeInset = UIEdgeInsetsZero;
+    edgeInset.left = MAX(0.0, round((scrollViewSize.width - scrollViewContentSize.width) / 2.0));
+    edgeInset.right = MAX(0.0, round((scrollViewSize.width - scrollViewContentSize.width) / 2.0));
+    edgeInset.top = MAX(0.0, round((scrollViewSize.height - scrollViewContentSize.height) / 2.0));
+    edgeInset.bottom = MAX(0.0, round((scrollViewSize.height - scrollViewContentSize.height) / 2.0));
+    _scrollView.contentInset = edgeInset;
+
+    if (_scrollView.zoomScale <= _scrollView.minimumZoomScale) {
+        _scrollView.scrollEnabled = NO;
+    } else {
+        _scrollView.scrollEnabled = YES;
+        _scrollView.userInteractionEnabled = YES;
+    }
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    NSLog(@"TODO * scrollViewDidScroll");
 }
 
 @end

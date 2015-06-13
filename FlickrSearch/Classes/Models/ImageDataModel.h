@@ -8,7 +8,14 @@
 
 #import <Foundation/Foundation.h>
 
-@interface PhotoInfo : NSObject
+typedef NS_ENUM(NSInteger, ImageType) {
+    IT_Loading = 0,
+    IT_Thumb,
+    IT_Small,
+    IT_Large
+};
+
+@interface ImageDataModel : NSObject
 
 @property (nonatomic, strong) NSString *title;
 

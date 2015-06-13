@@ -7,7 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		552C6D131B2AFDBF00093C9F /* PhotoInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 552C6D121B2AFDBF00093C9F /* PhotoInfo.m */; };
+		552C6D131B2AFDBF00093C9F /* ImageDataModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 552C6D121B2AFDBF00093C9F /* ImageDataModel.m */; };
+		555B5C8A1B2B7AA3009D82D8 /* ImageCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 555B5C891B2B7AA3009D82D8 /* ImageCollectionViewCell.m */; };
+		5597F5E21B2C2FA300FC8ECC /* CustomImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5597F5E11B2C2FA300FC8ECC /* CustomImageView.m */; };
 		55D6B38A1B28C49F00F1D997 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 55D6B3831B28C49F00F1D997 /* AppDelegate.m */; };
 		55D6B38B1B28C49F00F1D997 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55D6B3891B28C49F00F1D997 /* LaunchScreen.xib */; };
 		55D6B38F1B28C7AC00F1D997 /* ImageOverviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 55D6B38E1B28C7AC00F1D997 /* ImageOverviewController.m */; };
@@ -35,8 +37,12 @@
 
 /* Begin PBXFileReference section */
 		2596CD4BDEC3B2DA4237F68C /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		552C6D111B2AFDBF00093C9F /* PhotoInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoInfo.h; sourceTree = "<group>"; };
-		552C6D121B2AFDBF00093C9F /* PhotoInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoInfo.m; sourceTree = "<group>"; };
+		552C6D111B2AFDBF00093C9F /* ImageDataModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageDataModel.h; sourceTree = "<group>"; };
+		552C6D121B2AFDBF00093C9F /* ImageDataModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageDataModel.m; sourceTree = "<group>"; };
+		555B5C881B2B7AA3009D82D8 /* ImageCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageCollectionViewCell.h; sourceTree = "<group>"; };
+		555B5C891B2B7AA3009D82D8 /* ImageCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageCollectionViewCell.m; sourceTree = "<group>"; };
+		5597F5E01B2C2FA300FC8ECC /* CustomImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomImageView.h; sourceTree = "<group>"; };
+		5597F5E11B2C2FA300FC8ECC /* CustomImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomImageView.m; sourceTree = "<group>"; };
 		55D6B3821B28C49F00F1D997 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		55D6B3831B28C49F00F1D997 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		55D6B3891B28C49F00F1D997 /* LaunchScreen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LaunchScreen.xib; sourceTree = "<group>"; };
@@ -91,6 +97,15 @@
 				F5A4F49455646E12A37CF3A4 /* Pods.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		5597F5DF1B2C2F8F00FC8ECC /* CustomImageView */ = {
+			isa = PBXGroup;
+			children = (
+				5597F5E01B2C2FA300FC8ECC /* CustomImageView.h */,
+				5597F5E11B2C2FA300FC8ECC /* CustomImageView.m */,
+			);
+			path = CustomImageView;
 			sourceTree = "<group>";
 		};
 		55D6B3801B28C49F00F1D997 /* Classes */ = {
@@ -149,8 +164,8 @@
 		55D6B3871B28C49F00F1D997 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				552C6D111B2AFDBF00093C9F /* PhotoInfo.h */,
-				552C6D121B2AFDBF00093C9F /* PhotoInfo.m */,
+				552C6D111B2AFDBF00093C9F /* ImageDataModel.h */,
+				552C6D121B2AFDBF00093C9F /* ImageDataModel.m */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -158,6 +173,7 @@
 		55D6B3881B28C49F00F1D997 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				5597F5DF1B2C2F8F00FC8ECC /* CustomImageView */,
 				55DC7B261B2A110400BF469D /* ImageOverview */,
 			);
 			path = Views;
@@ -177,6 +193,8 @@
 			children = (
 				55DC7B271B2A111800BF469D /* ImageOverviewView.h */,
 				55DC7B281B2A111800BF469D /* ImageOverviewView.m */,
+				555B5C881B2B7AA3009D82D8 /* ImageCollectionViewCell.h */,
+				555B5C891B2B7AA3009D82D8 /* ImageCollectionViewCell.m */,
 			);
 			path = ImageOverview;
 			sourceTree = "<group>";
@@ -393,9 +411,11 @@
 				55D6B38A1B28C49F00F1D997 /* AppDelegate.m in Sources */,
 				55F837881B28BA8700CCAD61 /* main.m in Sources */,
 				55D6B38F1B28C7AC00F1D997 /* ImageOverviewController.m in Sources */,
+				5597F5E21B2C2FA300FC8ECC /* CustomImageView.m in Sources */,
 				55DC7B2C1B2A13B000BF469D /* UIDevice+Additions.m in Sources */,
-				552C6D131B2AFDBF00093C9F /* PhotoInfo.m in Sources */,
+				552C6D131B2AFDBF00093C9F /* ImageDataModel.m in Sources */,
 				55DC7B3D1B2A1C6100BF469D /* WebServiceManager.m in Sources */,
+				555B5C8A1B2B7AA3009D82D8 /* ImageCollectionViewCell.m in Sources */,
 				55DC7B291B2A111800BF469D /* ImageOverviewView.m in Sources */,
 				55DC7B2F1B2A13CA00BF469D /* NSString+Additions.m in Sources */,
 			);

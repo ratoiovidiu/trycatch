@@ -8,7 +8,7 @@
 
 #import "WebServiceManager.h"
 
-#import "PhotoInfo.h"
+#import "ImageDataModel.h"
 #import "ConstantsGeneral.h"
 
 #import <AFNetworking/AFNetworking.h>
@@ -36,7 +36,7 @@
 }
 
 - (void)getPhotoListWithTag:(NSString *)text forPageNumber:(NSInteger)pageNumber usingCallback:(void (^)(id response, NSError *error))completionBlock {
-    NSString *urlString = [NSString stringWithFormat:@"https://api.flickr.com/services/rest/?api_key=%@&method=flickr.photos.search&format=json&text=%@&per_page=10&page=%ld", FSApiKey, text, (long)pageNumber];
+    NSString *urlString = [NSString stringWithFormat:@"https://api.flickr.com/services/rest/?api_key=%@&method=flickr.photos.search&format=json&text=%@&per_page=50&page=%ld", FSApiKey, text, (long)pageNumber];
 
     __weak typeof(self) weakSelf = self;
     NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:urlString]];
@@ -156,7 +156,7 @@
             id objPhotoList = [rawPhotoList objectForKey:@"photo"];
             if (YES == [objPhotoList isKindOfClass:[NSArray class]]) {
                 for (id photoDescription in objPhotoList) {
-                    [arrPhotoList addObject:[[PhotoInfo alloc] initWithFlickrDescription:photoDescription]];
+                    [arrPhotoList addObject:[[ImageDataModel alloc] initWithFlickrDescription:photoDescription]];
                 }
             }
         }
@@ -178,7 +178,6 @@
     return [NSDictionary dictionaryWithObjectsAndKeys:
             error, @"error",
             nil];
-
 }
 
 @end

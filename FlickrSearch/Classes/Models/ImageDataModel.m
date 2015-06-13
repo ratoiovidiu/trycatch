@@ -6,7 +6,7 @@
 //
 //
 
-#import "PhotoInfo.h"
+#import "ImageDataModel.h"
 
 #import "NSString+Additions.h"
 
@@ -17,7 +17,7 @@
 #define kFLICKR_ID_KEY              @"id"
 #define kFLICKR_SECRET_KEY          @"secret"
 
-@implementation PhotoInfo
+@implementation ImageDataModel
 
 - (instancetype)init {
     self = [super init];

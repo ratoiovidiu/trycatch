@@ -96,7 +96,6 @@
     }
 
     if (nil != url) {
-
         UIImage *smallImage = nil;
 
         if (!smallImage) {
@@ -115,6 +114,7 @@
             [_activityIndicator stopAnimating];
             _activityIndicator.hidden = YES;
             _scrollView.hidden = NO;
+
             _imageView.image = smallImage;
             _imageView.frame = self.bounds;
             _imageView.contentMode = UIViewContentModeScaleAspectFit;

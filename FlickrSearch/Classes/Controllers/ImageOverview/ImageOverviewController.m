@@ -79,7 +79,6 @@
                                                   [weakSelf processLiveDataElementList:response];
                                               } else {
                                                   self.imageDataNextRequestedPage = NSIntegerMin;
-                                                  self.imageDataTotalPages = self.imageDataCurrentPage;
                                                   NSLog(@"ERROR: %@", [error localizedDescription]);
                                               }
                                           }];

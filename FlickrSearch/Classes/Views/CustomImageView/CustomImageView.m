@@ -35,7 +35,6 @@
         [self addSubview:_scrollView];
 
         _imageView = [[UIImageView alloc] initWithFrame:CGRectZero];
-        _imageView.contentMode = UIViewContentModeScaleAspectFit;
         _imageView.backgroundColor = [UIColor clearColor];
         [_scrollView addSubview:_imageView];
 
@@ -47,6 +46,8 @@
         _activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
         _activityIndicator.backgroundColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.5];
         _activityIndicator.color = [UIColor blackColor];
+        _activityIndicator.layer.cornerRadius = 20.0;
+        _activityIndicator.clipsToBounds = YES;
         [self addSubview:_activityIndicator];
 
         _zoomEnabled = YES;
@@ -67,6 +68,8 @@
     _scrollView.maximumZoomScale = 1.0;
     _scrollView.zoomScale = 1.0;
 
+    _imageView.image = nil;
+
     _scrollView.hidden = YES;
     _activityIndicator.hidden = NO;
     [_activityIndicator startAnimating];
@@ -84,7 +87,7 @@
         }
 
         case IT_Large: {
-            url = [NSURL URLWithString:imageInfo.defaultUrlString];
+            url = [NSURL URLWithString:imageInfo.largeUrlString];
             break;
         }
 
@@ -114,6 +117,7 @@
         if (smallImage) {
             _scrollView.hidden = NO;
             _imageView.image = smallImage;
+            _imageView.contentMode = UIViewContentModeScaleAspectFit;
         }
 
         __weak typeof(self) weakSelf = self;
@@ -127,12 +131,21 @@
                                        weakSelf.scrollView.hidden = NO;
 
                                        weakSelf.imageView.image = image;
+                                       weakSelf.imageView.contentMode = UIViewContentModeScaleAspectFit;
                                        weakSelf.imageView.frame = weakSelf.bounds;
                                        [weakSelf resetZoomLevel];
                                    }
                                    failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-                                       weakSelf.activityIndicator.hidden = YES;
                                        [weakSelf.activityIndicator stopAnimating];
+                                       weakSelf.activityIndicator.hidden = YES;
+                                       weakSelf.scrollView.hidden = NO;
+
+                                       if (nil == weakSelf.imageView.image) {
+                                           weakSelf.imageView.contentMode = UIViewContentModeCenter;
+                                           weakSelf.imageView.image = [UIImage imageNamed:@"broken-link.png"];
+                                       }
+                                       weakSelf.imageView.frame = weakSelf.bounds;
+                                       [weakSelf resetZoomLevel];
                                    }];
     }
 }

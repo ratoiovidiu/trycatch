@@ -36,7 +36,7 @@
 }
 
 - (void)getPhotoListWithTag:(NSString *)text forPageNumber:(NSInteger)pageNumber usingCallback:(void (^)(id response, NSError *error))completionBlock {
-    NSString *urlString = [NSString stringWithFormat:@"https://api.flickr.com/services/rest/?api_key=%@&method=flickr.photos.search&format=json&text=%@&per_page=50&page=%ld", FSApiKey, [text stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], (long)pageNumber];
+    NSString *urlString = [NSString stringWithFormat:@"https://api.flickr.com/services/rest/?api_key=%@&method=flickr.photos.search&min_upload_date=2013-01-01&format=json&text=%@&per_page=50&page=%ld", FSApiKey, [text stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], (long)pageNumber];
 
     __weak typeof(self) weakSelf = self;
     NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:urlString]];

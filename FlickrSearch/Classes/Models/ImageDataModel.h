@@ -22,9 +22,6 @@ typedef NS_ENUM(NSInteger, ImageType) {
 @property (nonatomic, strong) NSString *thumbUrlString;
 @property (nonatomic, strong) NSString *smallUrlString;
 @property (nonatomic, strong) NSString *largeUrlString;
-@property (nonatomic, strong) NSString *defaultUrlString;
-
-@property (nonatomic, strong) NSDictionary *rawFlickrDescription;
 
 - (instancetype)initWithFlickrDescription:(NSDictionary *)description;
 

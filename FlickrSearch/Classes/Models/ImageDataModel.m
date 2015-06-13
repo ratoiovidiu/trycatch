@@ -27,7 +27,6 @@
         self.thumbUrlString = nil;
         self.smallUrlString = nil;
         self.largeUrlString = nil;
-        self.defaultUrlString = nil;
     }
 
     return self;
@@ -49,9 +48,6 @@
         self.thumbUrlString = [NSString stringWithFormat:@"https://farm%@.staticflickr.com/%@/%@_%@_q.jpg", farm, serverId, photoId, secret];
         self.smallUrlString = [NSString stringWithFormat:@"https://farm%@.staticflickr.com/%@/%@_%@_m.jpg", farm, serverId, photoId, secret];
         self.largeUrlString = [NSString stringWithFormat:@"https://farm%@.staticflickr.com/%@/%@_%@_b.jpg", farm, serverId, photoId, secret];
-        self.defaultUrlString = [NSString stringWithFormat:@"https://farm%@.staticflickr.com/%@/%@_%@.jpg", farm, serverId, photoId, secret];
-
-        self.rawFlickrDescription = [NSDictionary dictionaryWithDictionary:description];
     }
 
     return self;

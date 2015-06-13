@@ -50,7 +50,6 @@
         _activityIndicator.clipsToBounds = YES;
         [self addSubview:_activityIndicator];
 
-        _zoomEnabled = YES;
         self.zoomEnabled = NO;
     }
 
@@ -97,7 +96,6 @@
     }
 
     if (nil != url) {
-
         UIImage *smallImage = nil;
 
         if (IT_Large == sizeType) {
@@ -115,7 +113,10 @@
         }
 
         if (smallImage) {
+            [_activityIndicator stopAnimating];
+            _activityIndicator.hidden = YES;
             _scrollView.hidden = NO;
+
             _imageView.image = smallImage;
             _imageView.contentMode = UIViewContentModeScaleAspectFit;
         }

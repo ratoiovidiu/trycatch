@@ -216,7 +216,6 @@
         if (indexPath.row < self.imageDataElementsList.count) {
             id imageInfo = [self.imageDataElementsList objectAtIndex:indexPath.row];
             if (imageInfo && (YES == [imageInfo isKindOfClass:[ImageDataModel class]])) {
-                // TODO *
                 ImageDetailsController *ctrl = [[ImageDetailsController alloc] init];
                 [ctrl displayImage:imageInfo];
                 [self.navigationController pushViewController:ctrl animated:YES];

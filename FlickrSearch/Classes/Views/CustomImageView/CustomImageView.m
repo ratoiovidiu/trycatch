@@ -39,6 +39,11 @@
         _imageView.backgroundColor = [UIColor clearColor];
         [_scrollView addSubview:_imageView];
 
+        UITapGestureRecognizer *doubleTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scrollViewDoubleTapped:)];
+        doubleTapRecognizer.numberOfTapsRequired = 2;
+        doubleTapRecognizer.numberOfTouchesRequired = 1;
+        [_scrollView addGestureRecognizer:doubleTapRecognizer];
+
         _activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
         _activityIndicator.backgroundColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.5];
         _activityIndicator.color = [UIColor blackColor];
@@ -52,24 +57,8 @@
 }
 
 - (void)setZoomEnabled:(BOOL)zoomEnabled {
-    if (_zoomEnabled != zoomEnabled) {
-        for (UIGestureRecognizer *recognizer in _scrollView.gestureRecognizers) {
-            [_scrollView removeGestureRecognizer:recognizer];
-        }
-        _scrollView.userInteractionEnabled = NO;
-
-        if (zoomEnabled) {
-            // ADD GESTURE RECOGNIZER
-            UITapGestureRecognizer *doubleTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scrollViewDoubleTapped:)];
-            doubleTapRecognizer.numberOfTapsRequired = 2;
-            doubleTapRecognizer.numberOfTouchesRequired = 1;
-            [_scrollView addGestureRecognizer:doubleTapRecognizer];
-
-            _scrollView.userInteractionEnabled = YES;
-        }
-    }
-
     _zoomEnabled = zoomEnabled;
+    _scrollView.userInteractionEnabled = zoomEnabled;
 }
 
 - (void)displayImageWithInfo:(ImageDataModel *)imageInfo forSize:(ImageType)sizeType {
@@ -95,7 +84,7 @@
         }
 
         case IT_Large: {
-            url = [NSURL URLWithString:imageInfo.largeUrlString];
+            url = [NSURL URLWithString:imageInfo.defaultUrlString];
             break;
         }
 
@@ -125,9 +114,6 @@
         if (smallImage) {
             _scrollView.hidden = NO;
             _imageView.image = smallImage;
-
-            _activityIndicator.hidden = YES;
-            [_activityIndicator stopAnimating];
         }
 
         __weak typeof(self) weakSelf = self;
@@ -227,10 +213,6 @@
         _scrollView.scrollEnabled = YES;
         _scrollView.userInteractionEnabled = YES;
     }
-}
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    NSLog(@"TODO * scrollViewDidScroll");
 }
 
 @end

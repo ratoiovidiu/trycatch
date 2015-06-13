@@ -50,6 +50,8 @@
         self.smallUrlString = [NSString stringWithFormat:@"https://farm%@.staticflickr.com/%@/%@_%@_n.jpg", farm, serverId, photoId, secret];
         self.largeUrlString = [NSString stringWithFormat:@"https://farm%@.staticflickr.com/%@/%@_%@_h.jpg", farm, serverId, photoId, secret];
         self.defaultUrlString = [NSString stringWithFormat:@"https://farm%@.staticflickr.com/%@/%@_%@.jpg", farm, serverId, photoId, secret];
+
+        self.rawFlickrDescription = [NSDictionary dictionaryWithDictionary:description];
     }
 
     return self;

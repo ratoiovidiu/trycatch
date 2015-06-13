@@ -10,7 +10,7 @@
 
 #import "ImageDetailsView.h"
 
-@interface ImageDetailsController () // <UIGestureRecognizerDelegate>
+@interface ImageDetailsController () <UIGestureRecognizerDelegate>
 
 @end
 
@@ -19,15 +19,15 @@
 - (void)loadView {
     ImageDetailsView *pageView = [[ImageDetailsView alloc] initWithFrame:CGRectZero];
 
-//    UISwipeGestureRecognizer *swipeDownGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipeDown)];
-//    swipeDownGestureRecognizer.direction = UISwipeGestureRecognizerDirectionDown;
-//    swipeDownGestureRecognizer.delegate = self;
-//    [pageView addGestureRecognizer:swipeDownGestureRecognizer];
-//
-//    UISwipeGestureRecognizer *swipeUpGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipeUp)];
-//    swipeUpGestureRecognizer.direction = UISwipeGestureRecognizerDirectionUp;
-//    swipeUpGestureRecognizer.delegate = self;
-//    [pageView addGestureRecognizer:swipeUpGestureRecognizer];
+    UISwipeGestureRecognizer *swipeDownGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipeDown)];
+    swipeDownGestureRecognizer.direction = UISwipeGestureRecognizerDirectionDown;
+    swipeDownGestureRecognizer.delegate = self;
+    [pageView addGestureRecognizer:swipeDownGestureRecognizer];
+
+    UISwipeGestureRecognizer *swipeUpGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipeUp)];
+    swipeUpGestureRecognizer.direction = UISwipeGestureRecognizerDirectionUp;
+    swipeUpGestureRecognizer.delegate = self;
+    [pageView addGestureRecognizer:swipeUpGestureRecognizer];
 
     self.view = pageView;
 }
@@ -47,20 +47,20 @@
     [pageView.ivCustom displayImageWithInfo:imageInfo forSize:IT_Large];
 }
 
-//- (void)handleSwipeDown {
-//    if (YES == self.navigationController.navigationBarHidden) {
-//        [self.navigationController setNavigationBarHidden:NO animated:YES];
-//    }
-//}
-//
-//- (void)handleSwipeUp {
-//    if (NO == self.navigationController.navigationBarHidden) {
-//        [self.navigationController setNavigationBarHidden:YES animated:YES];
-//    }
-//}
-//
-//- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
-//    return YES;
-//}
+- (void)handleSwipeDown {
+    if (YES == self.navigationController.navigationBarHidden) {
+        [self.navigationController setNavigationBarHidden:NO animated:YES];
+    }
+}
+
+- (void)handleSwipeUp {
+    if (NO == self.navigationController.navigationBarHidden) {
+        [self.navigationController setNavigationBarHidden:YES animated:YES];
+    }
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    return YES;
+}
 
 @end

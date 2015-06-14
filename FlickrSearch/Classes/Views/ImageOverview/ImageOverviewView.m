@@ -12,16 +12,11 @@
 
 #define kLAYOUT_PADDING                     10.0
 
-#define kLAYOUT_ITEM_WIDTH                  (IS_IPAD ? 200.0 : 100.0)
-#define kLAYOUT_ITEM_HEIGHT                 (kLAYOUT_ITEM_WIDTH)
+#define kLAYOUT_SMALL_ITEM                  (IS_IPAD ? 100.0 : 60.0)
 
-#define kLAYOUT_EDGE_INSET_TOP              (IS_IPAD ? 20.0 : 5.0)
-#define kLAYOUT_EDGE_INSET_LEFT             (kLAYOUT_EDGE_INSET_TOP)
-#define kLAYOUT_EDGE_INSET_BOTTOM           (kLAYOUT_EDGE_INSET_TOP)
-#define kLAYOUT_EDGE_INSET_RIGHT            (kLAYOUT_EDGE_INSET_LEFT)
-
+#define kLAYOUT_NORMAL_ITEM                 (IS_IPAD ? 200.0 : 100.0)
+#define kLAYOUT_EDGE_INSET                  (IS_IPAD ? 20.0 : 5.0)
 #define kLAYOUT_MIN_INTER_ITEM_SPACING      (IS_IPAD ? 15.0 : 5.0)
-#define kLAYOUT_MIN_LINE_SPACING            (IS_IPAD ? 40.0 : 5.0)
 
 @implementation ImageOverviewView
 
@@ -31,26 +26,21 @@
         self.clipsToBounds = YES;
         self.backgroundColor = [UIColor clearColor];
 
-        UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
-        flowLayout.scrollDirection = UICollectionViewScrollDirectionVertical;
-        flowLayout.itemSize = CGSizeMake(kLAYOUT_ITEM_WIDTH, kLAYOUT_ITEM_HEIGHT);
-        flowLayout.sectionInset = UIEdgeInsetsMake(kLAYOUT_EDGE_INSET_TOP, kLAYOUT_EDGE_INSET_LEFT, kLAYOUT_EDGE_INSET_BOTTOM, kLAYOUT_EDGE_INSET_RIGHT);
-        flowLayout.minimumInteritemSpacing = kLAYOUT_MIN_INTER_ITEM_SPACING;
-        flowLayout.minimumLineSpacing = kLAYOUT_MIN_LINE_SPACING;
-
-        _cvImageOverview = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:flowLayout];
-        _cvImageOverview.backgroundColor = [[UIColor blueColor] colorWithAlphaComponent:0.2];
-        [self addSubview:_cvImageOverview];
-
         _ivFullImage = [[CustomImageView alloc] initWithFrame:CGRectZero];
         _ivFullImage.backgroundColor = [UIColor clearColor];
         _ivFullImage.zoomEnabled = YES;
         [self addSubview:_ivFullImage];
 
+        _cvImageOverview = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:[[UICollectionViewFlowLayout alloc] init]];
+        _cvImageOverview.backgroundColor = [UIColor clearColor];
+        [self addSubview:_cvImageOverview];
+
         _btnCloseDetailsLayout = [[UIButton alloc] initWithFrame:CGRectZero];
         [_btnCloseDetailsLayout setImage:[UIImage imageNamed:@"btn_close.png"] forState:UIControlStateNormal];
+        _btnCloseDetailsLayout.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.4];
         [self addSubview:_btnCloseDetailsLayout];
 
+        _layoutType = LT_Details;
         self.layoutType = LT_ListOnly;
     }
 
@@ -58,8 +48,79 @@
 }
 
 - (void)setLayoutType:(ImageOverviewLayoutType)layoutType {
+    [self setLayoutType:layoutType animated:NO];
+}
+
+- (void)setLayoutType:(ImageOverviewLayoutType)layoutType animated:(BOOL)animated {
+    [self setLayoutType:layoutType animated:animated completion:NULL];
+}
+
+- (void)setLayoutType:(ImageOverviewLayoutType)layoutType animated:(BOOL)animated completion:(void (^)())completion {
+    if (layoutType == _layoutType) {
+        return;
+    }
+
     _layoutType = layoutType;
-    [self setNeedsLayout];
+
+    UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
+    switch (_layoutType) {
+        case LT_ListOnly: {
+            flowLayout.scrollDirection = UICollectionViewScrollDirectionVertical;
+            flowLayout.itemSize = CGSizeMake(kLAYOUT_NORMAL_ITEM, kLAYOUT_NORMAL_ITEM);
+            flowLayout.sectionInset = UIEdgeInsetsMake(kLAYOUT_EDGE_INSET, kLAYOUT_EDGE_INSET, kLAYOUT_EDGE_INSET, kLAYOUT_EDGE_INSET);
+            flowLayout.minimumInteritemSpacing = kLAYOUT_MIN_INTER_ITEM_SPACING;
+            flowLayout.minimumLineSpacing = kLAYOUT_MIN_INTER_ITEM_SPACING;
+
+            break;
+        }
+
+        case LT_Details: {
+            flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+            flowLayout.itemSize = CGSizeMake(kLAYOUT_SMALL_ITEM, kLAYOUT_SMALL_ITEM);
+            flowLayout.sectionInset = UIEdgeInsetsZero;
+            flowLayout.minimumInteritemSpacing = kLAYOUT_MIN_INTER_ITEM_SPACING;
+            flowLayout.minimumLineSpacing = kLAYOUT_MIN_INTER_ITEM_SPACING;
+
+            break;
+        }
+    }
+
+    if (animated) {
+        CGFloat animationDuration = 0.1;
+
+        CGRect originFrame = _cvImageOverview.frame;
+        CGFloat maxHeight = round(CGRectGetHeight(self.bounds) * 1.05);
+
+        __weak typeof(self) weakSelf = self;
+        [UIView animateWithDuration:animationDuration delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+            CGRect newFrame = originFrame;
+            newFrame.origin.y = maxHeight;
+
+            weakSelf.cvImageOverview.frame = newFrame;
+        } completion:^(BOOL finished) {
+            [weakSelf.cvImageOverview setCollectionViewLayout:flowLayout animated:NO completion:^(BOOL finished) {
+                [weakSelf.cvImageOverview.collectionViewLayout invalidateLayout];
+                [UIView animateWithDuration:animationDuration delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+                    [weakSelf layoutSubviews];
+                } completion:^(BOOL finished) {
+                    [weakSelf.cvImageOverview reloadData];
+                    [weakSelf setNeedsLayout];
+
+                    if (completion) {
+                        completion();
+                    }
+                }];
+            }];
+        }];
+    } else {
+        _cvImageOverview.collectionViewLayout = flowLayout;
+        [_cvImageOverview reloadData];
+        [self setNeedsLayout];
+
+        if (completion) {
+            completion();
+        }
+    }
 }
 
 - (void)layoutSubviews {
@@ -69,47 +130,30 @@
     switch (_layoutType) {
         case LT_ListOnly: {
             _cvImageOverview.frame = frame;
+            _cvImageOverview.backgroundColor = [UIColor clearColor];
             _ivFullImage.frame = CGRectZero;
             _btnCloseDetailsLayout.frame = CGRectZero;
-
-            // SETTING THE CORRECT FLOW-LAYOUT FOR COLLECTION-VIEW
-            id objCollectionLayout = _cvImageOverview.collectionViewLayout;
-            if (objCollectionLayout && (YES == [objCollectionLayout isKindOfClass:[UICollectionViewFlowLayout class]])) {
-                UICollectionViewFlowLayout *flowLayout = objCollectionLayout;
-                flowLayout.scrollDirection = UICollectionViewScrollDirectionVertical;
-                _cvImageOverview.collectionViewLayout = flowLayout;
-            }
             break;
         }
 
         case LT_Details: {
             CGFloat cvWidth = round(CGRectGetWidth(frame));
-            CGFloat cvHeight = round(kLAYOUT_ITEM_HEIGHT + kLAYOUT_EDGE_INSET_TOP + kLAYOUT_EDGE_INSET_BOTTOM + 2.0);
+            CGFloat cvHeight = round(kLAYOUT_SMALL_ITEM + 2 * kLAYOUT_MIN_INTER_ITEM_SPACING);
 
             _cvImageOverview.frame = CGRectMake(CGRectGetMinX(frame),
                                                 CGRectGetMaxY(frame) - cvHeight,
                                                 cvWidth,
                                                 cvHeight);
+            _cvImageOverview.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.4];
 
-            _ivFullImage.frame = CGRectMake(CGRectGetMinX(frame) + kLAYOUT_PADDING,
-                                            CGRectGetMinY(frame) + kLAYOUT_PADDING,
-                                            round(CGRectGetWidth(frame) - 2 * kLAYOUT_PADDING),
-                                            round(CGRectGetMinY(_cvImageOverview.frame) - CGRectGetMinY(frame) - 2 * kLAYOUT_PADDING));
+            _ivFullImage.frame = CGRectInset(frame, 10.0, 10.0);
 
             CGFloat buttonSize = 40.0;
             _btnCloseDetailsLayout.frame = CGRectMake(CGRectGetMaxX(_ivFullImage.frame) - buttonSize,
                                                       CGRectGetMinY(_ivFullImage.frame),
                                                       buttonSize,
                                                       buttonSize);
-
-            // SETTING THE CORRECT FLOW-LAYOUT FOR COLLECTION-VIEW
-            id objCollectionLayout = _cvImageOverview.collectionViewLayout;
-            if (objCollectionLayout && (YES == [objCollectionLayout isKindOfClass:[UICollectionViewFlowLayout class]])) {
-                UICollectionViewFlowLayout *flowLayout = objCollectionLayout;
-                flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-                _cvImageOverview.collectionViewLayout = flowLayout;
-            }
-
+            _btnCloseDetailsLayout.layer.cornerRadius = round(buttonSize * 0.5);
             break;
         }
     }

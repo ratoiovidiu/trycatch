@@ -26,5 +26,7 @@ typedef NS_ENUM(NSInteger, ImageOverviewLayoutType) {
 @property (nonatomic, strong) CustomImageView *ivFullImage;
 
 - (instancetype)initWithFrame:(CGRect)frame;
+- (void)setLayoutType:(ImageOverviewLayoutType)layoutType animated:(BOOL)animated;
+- (void)setLayoutType:(ImageOverviewLayoutType)layoutType animated:(BOOL)animated completion:(void (^)())completion;
 
 @end

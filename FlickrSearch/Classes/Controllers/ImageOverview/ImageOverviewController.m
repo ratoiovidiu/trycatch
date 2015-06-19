@@ -16,7 +16,7 @@
 
 #define kIMAGE_COLLECTION_VIEW_CELL_KEY @"IMAGE_COLLECTION_VIEW_CELL_KEY"
 
-@interface ImageOverviewController () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
+@interface ImageOverviewController () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, CustomImageViewDelegate>
 
 @property (nonatomic, assign) NSInteger imageDataTotalPages;
 @property (nonatomic, assign) NSInteger imageDataCurrentPage;
@@ -30,6 +30,8 @@
 
 - (void)loadView {
     ImageOverviewView *pageView = [[ImageOverviewView alloc] initWithFrame:CGRectZero];
+
+    pageView.ivFullImage.delegate = self;
 
     pageView.cvImageOverview.dataSource = self;
     pageView.cvImageOverview.delegate = self;
@@ -45,13 +47,15 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+    [self fixNavigationBar];
+
     __weak typeof(self) weakSelf = self;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [weakSelf btnFetchData_Touched];
+        [weakSelf startInitialDownload];
     });
 }
 
-- (void)btnFetchData_Touched {
+- (void)startInitialDownload {
     self.imageDataNextRequestedPage = NSIntegerMin;
     self.imageDataCurrentPage = 0;
     self.imageDataTotalPages = NSIntegerMax;
@@ -66,13 +70,26 @@
 
 #pragma mark - Private Methods
 
+- (void)fixNavigationBar {
+    ImageOverviewView *pageView = (ImageOverviewView *)self.view;
+    if (LT_ListOnly == pageView.layoutType) {
+        [self.navigationController setNavigationBarHidden:NO animated:YES];
+        [UIView animateWithDuration:UINavigationControllerHideShowBarDuration animations:^{
+            [self.navigationController setNavigationBarHidden:NO animated:YES];
+            [pageView layoutSubviews];
+        }];
+    } else {
+        [self.navigationController setNavigationBarHidden:YES animated:YES];
+    }
+}
+
 - (void)downloadLiveDataForPage:(NSInteger)currentPage {
     NSInteger nextPageNumber = (1 + currentPage);
     if (self.imageDataNextRequestedPage < nextPageNumber) {
         self.imageDataNextRequestedPage = nextPageNumber;
 
         __weak typeof(self) weakSelf = self;
-        [[WebServiceManager shared] getPhotoListWithTag:@"party"
+        [[WebServiceManager shared] getPhotoListWithTag:self.searchText
                                           forPageNumber:nextPageNumber
                                           usingCallback:^(id response, NSError *error) {
                                               if ((nil == error) && (YES == [response isKindOfClass:[NSDictionary class]])) {
@@ -112,6 +129,7 @@
 #pragma mark - UIButton actions
 
 - (void)btnCloseDetailsLayout_Touched {
+    __weak typeof(self) weakSelf = self;
     __weak ImageOverviewView *pageView = (ImageOverviewView *)self.view;
 
     NSIndexPath *selectedIndex = nil;
@@ -121,6 +139,7 @@
     }
 
     [pageView setLayoutType:LT_ListOnly animated:YES completion:^{
+        [weakSelf fixNavigationBar];
         if (nil != selectedIndex) {
             [pageView.cvImageOverview scrollToItemAtIndexPath:selectedIndex
                                              atScrollPosition:(UICollectionViewScrollPositionCenteredVertically | UICollectionViewScrollPositionCenteredHorizontally)
@@ -159,14 +178,14 @@
 
     if (collectionView == pageView.cvImageOverview) {
         if (self.imageDataCurrentPage < self.imageDataTotalPages) {
-            if ((0 != self.imageDataElementsList.count) && (ABS([collectionView numberOfItemsInSection:indexPath.section] - indexPath.row) < 20)) {
+            if ((0 != self.imageDataElementsList.count) && (ABS([collectionView numberOfItemsInSection:indexPath.section] - indexPath.item) < 20)) {
                 [self downloadLiveDataForPage:self.imageDataCurrentPage];
             }
         }
 
         if (nil == cell) {
-            if (indexPath.row < self.imageDataElementsList.count) {
-                id imageInfo = [self.imageDataElementsList objectAtIndex:indexPath.row];
+            if (indexPath.item < self.imageDataElementsList.count) {
+                id imageInfo = [self.imageDataElementsList objectAtIndex:indexPath.item];
                 if (imageInfo && (YES == [imageInfo isKindOfClass:[ImageDataModel class]])) {
                     ImageCollectionViewCell *customCell = [collectionView dequeueReusableCellWithReuseIdentifier:kIMAGE_COLLECTION_VIEW_CELL_KEY
                                                                                                     forIndexPath:indexPath];
@@ -216,21 +235,69 @@
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    __weak typeof(self) weakSelf = self;
     __weak ImageOverviewView *pageView = (ImageOverviewView *)self.view;
 
     if (collectionView == pageView.cvImageOverview) {
-        if (indexPath.row < self.imageDataElementsList.count) {
-            id imageInfo = [self.imageDataElementsList objectAtIndex:indexPath.row];
+        if (indexPath.item < self.imageDataElementsList.count) {
+            id imageInfo = [self.imageDataElementsList objectAtIndex:indexPath.item];
             if (imageInfo && (YES == [imageInfo isKindOfClass:[ImageDataModel class]])) {
                 [pageView.ivFullImage displayImageWithInfo:imageInfo forSize:IT_Large];
 
-                [pageView setLayoutType:LT_Details animated:YES completion:^{
-                    [pageView.cvImageOverview scrollToItemAtIndexPath:indexPath
-                                                     atScrollPosition:(UICollectionViewScrollPositionCenteredVertically | UICollectionViewScrollPositionCenteredHorizontally)
-                                                             animated:NO];
+                BOOL animate = (LT_Details == pageView.layoutType);
+                [pageView setLayoutType:LT_Details animated:(!animate) completion:^{
+                    [weakSelf fixNavigationBar];
+
+                    NSIndexPath *selectedIndex = nil;
+                    NSArray *selectedItems = [pageView.cvImageOverview indexPathsForSelectedItems];
+                    if (0 != selectedItems.count) {
+                        selectedIndex = [selectedItems firstObject];
+                    }
+
+                    if (YES == [selectedIndex isEqual:indexPath]) {
+                        [pageView.cvImageOverview scrollToItemAtIndexPath:indexPath
+                                                         atScrollPosition:(UICollectionViewScrollPositionCenteredVertically | UICollectionViewScrollPositionCenteredHorizontally)
+                                                                 animated:YES];
+                    } else {
+                        [pageView.cvImageOverview selectItemAtIndexPath:indexPath
+                                                               animated:animate
+                                                         scrollPosition:(UICollectionViewScrollPositionCenteredVertically | UICollectionViewScrollPositionCenteredHorizontally)];
+                    }
                 }];
             }
         }
+    }
+}
+
+#pragma mark - CustomImageViewDelegate
+
+- (void)imageTapped:(CustomImageView *)imageView {
+    ImageOverviewView *pageView = (ImageOverviewView *)self.view;
+    pageView.cvImageOverview.hidden = !pageView.cvImageOverview.hidden;
+}
+
+- (void)displayPreviousImage:(CustomImageView *)imageView {
+    ImageOverviewView *pageView = (ImageOverviewView *)self.view;
+
+    NSArray *selectedItems = [pageView.cvImageOverview indexPathsForSelectedItems];
+    if (0 != selectedItems.count) {
+        NSIndexPath *selectedIndex = [selectedItems firstObject];
+        if (0 < selectedIndex.item) {
+            NSIndexPath *computedIndexPath = [NSIndexPath indexPathForItem:(selectedIndex.item - 1) inSection:selectedIndex.section];
+            [self collectionView:pageView.cvImageOverview didSelectItemAtIndexPath:computedIndexPath];
+        }
+    }
+}
+
+- (void)displayNextImage:(CustomImageView *)imageView {
+    ImageOverviewView *pageView = (ImageOverviewView *)self.view;
+
+    NSArray *selectedItems = [pageView.cvImageOverview indexPathsForSelectedItems];
+    if (0 != selectedItems.count) {
+        NSIndexPath *selectedIndex = [selectedItems firstObject];
+
+        NSIndexPath *computedIndexPath = [NSIndexPath indexPathForItem:(selectedIndex.item + 1) inSection:selectedIndex.section];
+        [self collectionView:pageView.cvImageOverview didSelectItemAtIndexPath:computedIndexPath];
     }
 }
 

@@ -10,4 +10,6 @@
 
 @interface ImageOverviewController : UIViewController
 
+@property (nonatomic, strong) NSString *searchText;
+
 @end

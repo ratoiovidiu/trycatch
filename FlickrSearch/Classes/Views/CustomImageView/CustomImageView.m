@@ -30,28 +30,13 @@
         _scrollView = [[UIScrollView alloc] initWithFrame:CGRectZero];
         _scrollView.backgroundColor = [UIColor clearColor];
         _scrollView.contentMode = UIViewContentModeCenter;
-        _scrollView.bounces = NO;
         _scrollView.delegate = self;
+        _scrollView.bounces = YES;
         [self addSubview:_scrollView];
 
         _imageView = [[UIImageView alloc] initWithFrame:CGRectZero];
         _imageView.backgroundColor = [UIColor clearColor];
         [_scrollView addSubview:_imageView];
-
-        UITapGestureRecognizer *singleTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scrollViewTapped)];
-        singleTapRecognizer.delaysTouchesBegan = YES;
-        singleTapRecognizer.numberOfTapsRequired = 1;
-        singleTapRecognizer.numberOfTouchesRequired = 1;
-
-        UITapGestureRecognizer *doubleTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scrollViewDoubleTapped)];
-        doubleTapRecognizer.delaysTouchesBegan = YES;
-        doubleTapRecognizer.numberOfTapsRequired = 2;
-        doubleTapRecognizer.numberOfTouchesRequired = 1;
-
-        [singleTapRecognizer requireGestureRecognizerToFail:doubleTapRecognizer];
-
-        [_scrollView addGestureRecognizer:singleTapRecognizer];
-        [_scrollView addGestureRecognizer:doubleTapRecognizer];
 
         _activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
         _activityIndicator.backgroundColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.5];
@@ -59,6 +44,28 @@
         _activityIndicator.layer.cornerRadius = 20.0;
         _activityIndicator.clipsToBounds = YES;
         [self addSubview:_activityIndicator];
+
+        UITapGestureRecognizer *singleTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapGesture)];
+        singleTapRecognizer.delaysTouchesBegan = YES;
+        singleTapRecognizer.numberOfTapsRequired = 1;
+        singleTapRecognizer.numberOfTouchesRequired = 1;
+
+        UITapGestureRecognizer *doubleTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDoubleTapGesture)];
+        doubleTapRecognizer.delaysTouchesBegan = YES;
+        doubleTapRecognizer.numberOfTapsRequired = 2;
+        doubleTapRecognizer.numberOfTouchesRequired = 1;
+
+        [singleTapRecognizer requireGestureRecognizerToFail:doubleTapRecognizer];
+
+        UIPanGestureRecognizer *panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleMove:)];
+        panGestureRecognizer.minimumNumberOfTouches = 1;
+        panGestureRecognizer.maximumNumberOfTouches = 1;
+
+        [panGestureRecognizer requireGestureRecognizerToFail:_scrollView.panGestureRecognizer];
+
+        [_scrollView addGestureRecognizer:singleTapRecognizer];
+        [_scrollView addGestureRecognizer:doubleTapRecognizer];
+        [_scrollView addGestureRecognizer:panGestureRecognizer];
 
         self.zoomEnabled = NO;
     }
@@ -177,14 +184,13 @@
     [self resetZoomLevel];
 }
 
-- (void)scrollViewTapped {
-    NSLog(@"TODO * tap");
+- (void)handleTapGesture {
     if (self.delegate && (YES == [self.delegate respondsToSelector:@selector(imageTapped:)])) {
         [self.delegate imageTapped:self];
     }
 }
 
-- (void)scrollViewDoubleTapped {
+- (void)handleDoubleTapGesture {
     if(_scrollView.zoomScale >= _scrollView.maximumZoomScale){
         [_scrollView setZoomScale:_scrollView.minimumZoomScale animated:YES];
     } else {
@@ -193,6 +199,21 @@
 
     if (self.delegate && (YES == [self.delegate respondsToSelector:@selector(imageDoubleTapped:)])) {
         [self.delegate imageDoubleTapped:self];
+    }
+}
+
+- (void)handleMove:(UIPanGestureRecognizer *)recognizer {
+    if ((UIGestureRecognizerStateEnded == recognizer.state) && (_scrollView.zoomScale == _scrollView.minimumZoomScale)) {
+        CGPoint velocity = [recognizer velocityInView:_scrollView];
+        if (velocity.x > 0) {
+            if (self.delegate && (YES == [self.delegate respondsToSelector:@selector(displayPreviousImage:)])) {
+                [self.delegate displayPreviousImage:self];
+            }
+        } else {
+            if (self.delegate && (YES == [self.delegate respondsToSelector:@selector(displayNextImage:)])) {
+                [self.delegate displayNextImage:self];
+            }
+        }
     }
 }
 
@@ -212,7 +233,6 @@
         _scrollView.minimumZoomScale = minScale;
         _scrollView.maximumZoomScale = 4.0;
         _scrollView.zoomScale = minScale;
-        _scrollView.scrollEnabled = NO;
 
         CGSize scrollViewSize = _scrollView.bounds.size;
         CGSize scrollViewContentSize = _scrollView.contentSize;
@@ -240,13 +260,6 @@
     edgeInset.top = MAX(0.0, round((scrollViewSize.height - scrollViewContentSize.height) / 2.0));
     edgeInset.bottom = MAX(0.0, round((scrollViewSize.height - scrollViewContentSize.height) / 2.0));
     _scrollView.contentInset = edgeInset;
-
-    if (_scrollView.zoomScale <= _scrollView.minimumZoomScale) {
-        _scrollView.scrollEnabled = NO;
-    } else {
-        _scrollView.scrollEnabled = YES;
-        _scrollView.userInteractionEnabled = YES;
-    }
 }
 
 @end

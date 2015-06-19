@@ -18,10 +18,6 @@
 #define kLAYOUT_EDGE_INSET                  (IS_IPAD ? 20.0 : 5.0)
 #define kLAYOUT_MIN_INTER_ITEM_SPACING      (IS_IPAD ? 15.0 : 5.0)
 
-@interface ImageOverviewView () <CustomImageViewDelegate>
-
-@end
-
 @implementation ImageOverviewView
 
 - (instancetype)initWithFrame:(CGRect)frame {
@@ -33,7 +29,6 @@
         _ivFullImage = [[CustomImageView alloc] initWithFrame:CGRectZero];
         _ivFullImage.backgroundColor = [UIColor clearColor];
         _ivFullImage.zoomEnabled = YES;
-        _ivFullImage.delegate = self;
         [self addSubview:_ivFullImage];
 
         _cvImageOverview = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:[[UICollectionViewFlowLayout alloc] init]];
@@ -58,10 +53,6 @@
 
 - (void)setLayoutType:(ImageOverviewLayoutType)layoutType animated:(BOOL)animated {
     [self setLayoutType:layoutType animated:animated completion:NULL];
-}
-
-- (void)imageTapped:(CustomImageView *)imageView {
-    _cvImageOverview.hidden = !_cvImageOverview.hidden;
 }
 
 - (void)setLayoutType:(ImageOverviewLayoutType)layoutType animated:(BOOL)animated completion:(void (^)())completion {

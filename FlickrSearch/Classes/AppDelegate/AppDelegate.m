@@ -8,7 +8,7 @@
 
 #import "AppDelegate.h"
 
-#import "ImageOverviewController.h"
+#import "ImageSearchController.h"
 
 @interface AppDelegate ()
 
@@ -22,7 +22,7 @@
     NSString *appName = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"];
     NSLog(@"'%@' did finish launching at path:\n\n%@\n\n\n", appName, documentsFolderPath);
 
-    ImageOverviewController *ctrl = [[ImageOverviewController alloc] init];
+    ImageSearchController *ctrl = [[ImageSearchController alloc] init];
     UINavigationController *navCtrl = [[UINavigationController alloc] initWithRootViewController:ctrl];
     [navCtrl setNavigationBarHidden:YES];
 

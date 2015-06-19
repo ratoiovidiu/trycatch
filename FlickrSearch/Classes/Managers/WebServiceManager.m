@@ -10,6 +10,7 @@
 
 #import "ImageDataModel.h"
 #import "ConstantsGeneral.h"
+#import "NSString+Additions.h"
 
 #import <AFNetworking/AFNetworking.h>
 
@@ -36,7 +37,14 @@
 }
 
 - (void)getPhotoListWithTag:(NSString *)text forPageNumber:(NSInteger)pageNumber usingCallback:(void (^)(id response, NSError *error))completionBlock {
-    NSString *urlString = [NSString stringWithFormat:@"https://api.flickr.com/services/rest/?api_key=%@&method=flickr.photos.search&min_upload_date=2013-01-01&format=json&text=%@&per_page=50&page=%ld", FSApiKey, [text stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], (long)pageNumber];
+    NSString *urlString = [NSString stringWithFormat:@"https://api.flickr.com/services/rest/?api_key=%@&method=flickr.photos.search&min_upload_date=2013-01-01&format=json&per_page=50&page=%ld", FSApiKey, (long)pageNumber];
+
+    NSString *modifiedSearchText = [[NSString emptyIfNil:text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    if (0 != modifiedSearchText.length) {
+        urlString = [urlString stringByAppendingFormat:@"&text=%@", [text stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    }
+
+    NSLog(@"Flickr GET call:\n\n%@\n\n", urlString);
 
     __weak typeof(self) weakSelf = self;
     NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:urlString]];

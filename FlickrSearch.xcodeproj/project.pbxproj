@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		552C6D131B2AFDBF00093C9F /* ImageDataModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 552C6D121B2AFDBF00093C9F /* ImageDataModel.m */; };
+		553E06271B3499CB007439A4 /* ImageSearchController.m in Sources */ = {isa = PBXBuildFile; fileRef = 553E06261B3499CB007439A4 /* ImageSearchController.m */; };
+		553E062B1B349A0A007439A4 /* ImageSearchView.m in Sources */ = {isa = PBXBuildFile; fileRef = 553E062A1B349A0A007439A4 /* ImageSearchView.m */; };
+		553E062E1B34B358007439A4 /* background.png in Resources */ = {isa = PBXBuildFile; fileRef = 553E062D1B34B358007439A4 /* background.png */; };
 		555B5C8A1B2B7AA3009D82D8 /* ImageCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 555B5C891B2B7AA3009D82D8 /* ImageCollectionViewCell.m */; };
 		5592B66F1B2CAEDC00B3F263 /* broken-link.png in Resources */ = {isa = PBXBuildFile; fileRef = 5592B66E1B2CAEDC00B3F263 /* broken-link.png */; };
 		5592B6721B2CAF4900B3F263 /* broken-link@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5592B6701B2CAF4900B3F263 /* broken-link@2x.png */; };
@@ -45,6 +48,11 @@
 		2596CD4BDEC3B2DA4237F68C /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		552C6D111B2AFDBF00093C9F /* ImageDataModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageDataModel.h; sourceTree = "<group>"; };
 		552C6D121B2AFDBF00093C9F /* ImageDataModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageDataModel.m; sourceTree = "<group>"; };
+		553E06251B3499CB007439A4 /* ImageSearchController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageSearchController.h; sourceTree = "<group>"; };
+		553E06261B3499CB007439A4 /* ImageSearchController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageSearchController.m; sourceTree = "<group>"; };
+		553E06291B349A0A007439A4 /* ImageSearchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageSearchView.h; sourceTree = "<group>"; };
+		553E062A1B349A0A007439A4 /* ImageSearchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageSearchView.m; sourceTree = "<group>"; };
+		553E062D1B34B358007439A4 /* background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = background.png; sourceTree = "<group>"; };
 		555B5C881B2B7AA3009D82D8 /* ImageCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageCollectionViewCell.h; sourceTree = "<group>"; };
 		555B5C891B2B7AA3009D82D8 /* ImageCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageCollectionViewCell.m; sourceTree = "<group>"; };
 		5592B66E1B2CAEDC00B3F263 /* broken-link.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "broken-link.png"; sourceTree = "<group>"; };
@@ -111,9 +119,28 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		553E06241B3499A8007439A4 /* ImageSearch */ = {
+			isa = PBXGroup;
+			children = (
+				553E06251B3499CB007439A4 /* ImageSearchController.h */,
+				553E06261B3499CB007439A4 /* ImageSearchController.m */,
+			);
+			path = ImageSearch;
+			sourceTree = "<group>";
+		};
+		553E06281B3499E0007439A4 /* ImageSearch */ = {
+			isa = PBXGroup;
+			children = (
+				553E06291B349A0A007439A4 /* ImageSearchView.h */,
+				553E062A1B349A0A007439A4 /* ImageSearchView.m */,
+			);
+			path = ImageSearch;
+			sourceTree = "<group>";
+		};
 		5592B66D1B2CAED100B3F263 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				553E062D1B34B358007439A4 /* background.png */,
 				5592B6741B2CBDA200B3F263 /* btn_close.png */,
 				5592B6751B2CBDA200B3F263 /* btn_close@2x.png */,
 				5592B6761B2CBDA200B3F263 /* btn_close@3x.png */,
@@ -182,6 +209,7 @@
 			isa = PBXGroup;
 			children = (
 				55D6B38C1B28C78A00F1D997 /* ImageOverview */,
+				553E06241B3499A8007439A4 /* ImageSearch */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -200,6 +228,7 @@
 			children = (
 				5597F5DF1B2C2F8F00FC8ECC /* CustomImageView */,
 				55DC7B261B2A110400BF469D /* ImageOverview */,
+				553E06281B3499E0007439A4 /* ImageSearch */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -387,6 +416,7 @@
 				5592B6731B2CAF4900B3F263 /* broken-link@3x.png in Resources */,
 				5592B6781B2CBDA200B3F263 /* btn_close@2x.png in Resources */,
 				5592B6771B2CBDA200B3F263 /* btn_close.png in Resources */,
+				553E062E1B34B358007439A4 /* background.png in Resources */,
 				5592B6791B2CBDA200B3F263 /* btn_close@3x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -442,6 +472,7 @@
 				55DC7B321B2A191E00BF469D /* UIScreen+Additions.m in Sources */,
 				55D6B38A1B28C49F00F1D997 /* AppDelegate.m in Sources */,
 				55F837881B28BA8700CCAD61 /* main.m in Sources */,
+				553E062B1B349A0A007439A4 /* ImageSearchView.m in Sources */,
 				55D6B38F1B28C7AC00F1D997 /* ImageOverviewController.m in Sources */,
 				5597F5E21B2C2FA300FC8ECC /* CustomImageView.m in Sources */,
 				55DC7B2C1B2A13B000BF469D /* UIDevice+Additions.m in Sources */,
@@ -449,6 +480,7 @@
 				55DC7B3D1B2A1C6100BF469D /* WebServiceManager.m in Sources */,
 				555B5C8A1B2B7AA3009D82D8 /* ImageCollectionViewCell.m in Sources */,
 				55DC7B291B2A111800BF469D /* ImageOverviewView.m in Sources */,
+				553E06271B3499CB007439A4 /* ImageSearchController.m in Sources */,
 				55DC7B2F1B2A13CA00BF469D /* NSString+Additions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

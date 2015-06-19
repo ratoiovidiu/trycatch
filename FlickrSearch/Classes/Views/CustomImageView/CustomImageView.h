@@ -19,6 +19,9 @@
 - (void)imageTapped:(CustomImageView *)imageView;
 - (void)imageDoubleTapped:(CustomImageView *)imageView;
 
+- (void)displayPreviousImage:(CustomImageView *)imageView;
+- (void)displayNextImage:(CustomImageView *)imageView;
+
 @end
 
 

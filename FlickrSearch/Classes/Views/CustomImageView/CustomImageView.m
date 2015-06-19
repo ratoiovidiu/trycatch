@@ -38,7 +38,12 @@
         _imageView.backgroundColor = [UIColor clearColor];
         [_scrollView addSubview:_imageView];
 
-        UITapGestureRecognizer *doubleTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scrollViewDoubleTapped:)];
+        UITapGestureRecognizer *singleTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scrollViewTapped)];
+        singleTapRecognizer.numberOfTapsRequired = 1;
+        singleTapRecognizer.numberOfTouchesRequired = 1;
+        [_scrollView addGestureRecognizer:singleTapRecognizer];
+
+        UITapGestureRecognizer *doubleTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scrollViewDoubleTapped)];
         doubleTapRecognizer.numberOfTapsRequired = 2;
         doubleTapRecognizer.numberOfTouchesRequired = 1;
         [_scrollView addGestureRecognizer:doubleTapRecognizer];
@@ -98,18 +103,16 @@
     if (nil != url) {
         UIImage *smallImage = nil;
 
-        if (IT_Large == sizeType) {
-            if (nil == smallImage) {
-                NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:imageInfo.smallUrlString]];
-                [request addValue:@"image/*" forHTTPHeaderField:@"Accept"];
-                smallImage = [[[_imageView class] sharedImageCache] cachedImageForRequest:request];
-            }
+        if (!smallImage) {
+            NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:imageInfo.smallUrlString]];
+            [request addValue:@"image/*" forHTTPHeaderField:@"Accept"];
+            smallImage = [[[_imageView class] sharedImageCache] cachedImageForRequest:request];
+        }
 
-            if (nil == smallImage) {
-                NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:imageInfo.thumbUrlString]];
-                [request addValue:@"image/*" forHTTPHeaderField:@"Accept"];
-                smallImage = [[[_imageView class] sharedImageCache] cachedImageForRequest:request];
-            }
+        if (!smallImage) {
+            NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:imageInfo.thumbUrlString]];
+            [request addValue:@"image/*" forHTTPHeaderField:@"Accept"];
+            smallImage = [[[_imageView class] sharedImageCache] cachedImageForRequest:request];
         }
 
         if (smallImage) {
@@ -118,6 +121,7 @@
             _scrollView.hidden = NO;
 
             _imageView.image = smallImage;
+            _imageView.frame = self.bounds;
             _imageView.contentMode = UIViewContentModeScaleAspectFit;
         }
 
@@ -132,8 +136,8 @@
                                        weakSelf.scrollView.hidden = NO;
 
                                        weakSelf.imageView.image = image;
-                                       weakSelf.imageView.contentMode = UIViewContentModeScaleAspectFit;
                                        weakSelf.imageView.frame = weakSelf.bounds;
+                                       weakSelf.imageView.contentMode = UIViewContentModeScaleAspectFit;
                                        [weakSelf resetZoomLevel];
                                    }
                                    failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
@@ -142,11 +146,11 @@
                                        weakSelf.scrollView.hidden = NO;
 
                                        if (nil == weakSelf.imageView.image) {
-                                           weakSelf.imageView.contentMode = UIViewContentModeCenter;
                                            weakSelf.imageView.image = [UIImage imageNamed:@"broken-link.png"];
+                                           weakSelf.imageView.contentMode = UIViewContentModeCenter;
+                                           weakSelf.imageView.frame = weakSelf.bounds;
+                                           [weakSelf resetZoomLevel];
                                        }
-                                       weakSelf.imageView.frame = weakSelf.bounds;
-                                       [weakSelf resetZoomLevel];
                                    }];
     }
 }
@@ -168,11 +172,22 @@
     [self resetZoomLevel];
 }
 
-- (void)scrollViewDoubleTapped:(UITapGestureRecognizer*)recognizer {
+- (void)scrollViewTapped {
+    NSLog(@"TODO * tap");
+    if (self.delegate && (YES == [self.delegate respondsToSelector:@selector(imageTapped:)])) {
+        [self.delegate imageTapped:self];
+    }
+}
+
+- (void)scrollViewDoubleTapped {
     if(_scrollView.zoomScale >= _scrollView.maximumZoomScale){
         [_scrollView setZoomScale:_scrollView.minimumZoomScale animated:YES];
     } else {
         [_scrollView setZoomScale:(_scrollView.zoomScale + (_scrollView.maximumZoomScale - _scrollView.minimumZoomScale) / 3.0) animated:YES];
+    }
+
+    if (self.delegate && (YES == [self.delegate respondsToSelector:@selector(imageDoubleTapped:)])) {
+        [self.delegate imageDoubleTapped:self];
     }
 }
 

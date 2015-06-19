@@ -14,8 +14,6 @@
 #import "ImageOverviewView.h"
 #import "ImageCollectionViewCell.h"
 
-#import "ImageDetailsController.h"
-
 #define kIMAGE_COLLECTION_VIEW_CELL_KEY @"IMAGE_COLLECTION_VIEW_CELL_KEY"
 
 @interface ImageOverviewController () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
@@ -36,6 +34,8 @@
     pageView.cvImageOverview.dataSource = self;
     pageView.cvImageOverview.delegate = self;
     [pageView.cvImageOverview registerClass:[ImageCollectionViewCell class] forCellWithReuseIdentifier:kIMAGE_COLLECTION_VIEW_CELL_KEY];
+
+    [pageView.btnCloseDetailsLayout addTarget:self action:@selector(btnCloseDetailsLayout_Touched) forControlEvents:UIControlEventTouchUpInside];
 
     self.imageDataElementsList = [NSMutableArray array];
 
@@ -109,6 +109,26 @@
     [pageView.cvImageOverview reloadData];
 }
 
+#pragma mark - UIButton actions
+
+- (void)btnCloseDetailsLayout_Touched {
+    __weak ImageOverviewView *pageView = (ImageOverviewView *)self.view;
+
+    NSIndexPath *selectedIndex = nil;
+    NSArray *selectedItems = [pageView.cvImageOverview indexPathsForSelectedItems];
+    if (0 != selectedItems.count) {
+        selectedIndex = [selectedItems firstObject];
+    }
+
+    [pageView setLayoutType:LT_ListOnly animated:YES completion:^{
+        if (nil != selectedIndex) {
+            [pageView.cvImageOverview scrollToItemAtIndexPath:selectedIndex
+                                             atScrollPosition:(UICollectionViewScrollPositionCenteredVertically | UICollectionViewScrollPositionCenteredHorizontally)
+                                                     animated:NO];
+        }
+    }];
+}
+
 #pragma mark - UICollectionViewDataSource
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
@@ -128,11 +148,6 @@
 
     if (collectionView == pageView.cvImageOverview) {
         numberOfItems = self.imageDataElementsList.count;
-
-        if (self.imageDataCurrentPage < self.imageDataTotalPages) {
-            // ADD ONE EXTRA ROW IN CASE OF "MORE DATA AVAILABLE"
-            numberOfItems++;
-        }
     }
 
     return numberOfItems;
@@ -144,16 +159,8 @@
 
     if (collectionView == pageView.cvImageOverview) {
         if (self.imageDataCurrentPage < self.imageDataTotalPages) {
-            if ((0 != self.imageDataElementsList.count) && (ABS([collectionView numberOfItemsInSection:indexPath.section] - indexPath.row) < 10)) {
+            if ((0 != self.imageDataElementsList.count) && (ABS([collectionView numberOfItemsInSection:indexPath.section] - indexPath.row) < 20)) {
                 [self downloadLiveDataForPage:self.imageDataCurrentPage];
-            }
-
-            if (indexPath.row == ([collectionView numberOfItemsInSection:indexPath.section] - 1)) {
-                ImageCollectionViewCell *customCell = [collectionView dequeueReusableCellWithReuseIdentifier:kIMAGE_COLLECTION_VIEW_CELL_KEY
-                                                                                                forIndexPath:indexPath];
-                [customCell.ivCustom displayImageWithInfo:nil forSize:IT_Loading];
-
-                cell = customCell;
             }
         }
 
@@ -163,7 +170,7 @@
                 if (imageInfo && (YES == [imageInfo isKindOfClass:[ImageDataModel class]])) {
                     ImageCollectionViewCell *customCell = [collectionView dequeueReusableCellWithReuseIdentifier:kIMAGE_COLLECTION_VIEW_CELL_KEY
                                                                                                     forIndexPath:indexPath];
-                    [customCell.ivCustom displayImageWithInfo:imageInfo forSize:IT_Small];
+                    [customCell.ivCustom displayImageWithInfo:imageInfo forSize:((LT_ListOnly == pageView.layoutType) ? IT_Small : IT_Thumb)];
 
                     cell = customCell;
                 }
@@ -209,15 +216,19 @@
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    ImageOverviewView *pageView = (ImageOverviewView *)self.view;
+    __weak ImageOverviewView *pageView = (ImageOverviewView *)self.view;
 
     if (collectionView == pageView.cvImageOverview) {
         if (indexPath.row < self.imageDataElementsList.count) {
             id imageInfo = [self.imageDataElementsList objectAtIndex:indexPath.row];
             if (imageInfo && (YES == [imageInfo isKindOfClass:[ImageDataModel class]])) {
-                ImageDetailsController *ctrl = [[ImageDetailsController alloc] init];
-                [ctrl displayImage:imageInfo];
-                [self.navigationController pushViewController:ctrl animated:YES];
+                [pageView.ivFullImage displayImageWithInfo:imageInfo forSize:IT_Large];
+
+                [pageView setLayoutType:LT_Details animated:YES completion:^{
+                    [pageView.cvImageOverview scrollToItemAtIndexPath:indexPath
+                                                     atScrollPosition:(UICollectionViewScrollPositionCenteredVertically | UICollectionViewScrollPositionCenteredHorizontally)
+                                                             animated:NO];
+                }];
             }
         }
     }

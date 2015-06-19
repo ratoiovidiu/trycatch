@@ -43,11 +43,11 @@
 
         self.title = [NSString emptyIfNil:[description objectForKey:kFLICKR_TITLE_KEY]];
 
-        //    https://farm{farm-id}.staticflickr.com/{server-id}/{id}_{secret}_[mstzb].jpg
-        //    https://farm{farm-id}.staticflickr.com/{server-id}/{id}_{secret}.jpg
         self.thumbUrlString = [NSString stringWithFormat:@"https://farm%@.staticflickr.com/%@/%@_%@_q.jpg", farm, serverId, photoId, secret];
         self.smallUrlString = [NSString stringWithFormat:@"https://farm%@.staticflickr.com/%@/%@_%@_m.jpg", farm, serverId, photoId, secret];
         self.largeUrlString = [NSString stringWithFormat:@"https://farm%@.staticflickr.com/%@/%@_%@_b.jpg", farm, serverId, photoId, secret];
+
+        //NSString *defaultUrlString = [NSString stringWithFormat:@"https://farm%@.staticflickr.com/%@/%@_%@.jpg", farm, serverId, photoId, secret];
     }
 
     return self;

@@ -10,8 +10,21 @@
 
 #import "ImageDataModel.h"
 
+@class CustomImageView;
+
+@protocol CustomImageViewDelegate <NSObject>
+
+@optional
+
+- (void)imageTapped:(CustomImageView *)imageView;
+- (void)imageDoubleTapped:(CustomImageView *)imageView;
+
+@end
+
+
 @interface CustomImageView : UIView
 
+@property (nonatomic, assign) id<CustomImageViewDelegate> delegate;
 @property (nonatomic, assign) BOOL zoomEnabled;
 
 - (instancetype)initWithFrame:(CGRect)frame;

@@ -36,6 +36,11 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:YES];
+
+    ImageSearchView *pageView = (ImageSearchView *)self.view;
+    pageView.tfSearch.text = @"";
+    
+    [self stopTextEditing];
 }
 
 - (void)stopTextEditing {

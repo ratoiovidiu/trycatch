@@ -38,7 +38,12 @@
         _imageView.backgroundColor = [UIColor clearColor];
         [_scrollView addSubview:_imageView];
 
-        UITapGestureRecognizer *doubleTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scrollViewDoubleTapped:)];
+        UITapGestureRecognizer *singleTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scrollViewTapped)];
+        singleTapRecognizer.numberOfTapsRequired = 1;
+        singleTapRecognizer.numberOfTouchesRequired = 1;
+        [_scrollView addGestureRecognizer:singleTapRecognizer];
+
+        UITapGestureRecognizer *doubleTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scrollViewDoubleTapped)];
         doubleTapRecognizer.numberOfTapsRequired = 2;
         doubleTapRecognizer.numberOfTouchesRequired = 1;
         [_scrollView addGestureRecognizer:doubleTapRecognizer];
@@ -167,11 +172,22 @@
     [self resetZoomLevel];
 }
 
-- (void)scrollViewDoubleTapped:(UITapGestureRecognizer*)recognizer {
+- (void)scrollViewTapped {
+    NSLog(@"TODO * tap");
+    if (self.delegate && (YES == [self.delegate respondsToSelector:@selector(imageTapped:)])) {
+        [self.delegate imageTapped:self];
+    }
+}
+
+- (void)scrollViewDoubleTapped {
     if(_scrollView.zoomScale >= _scrollView.maximumZoomScale){
         [_scrollView setZoomScale:_scrollView.minimumZoomScale animated:YES];
     } else {
         [_scrollView setZoomScale:(_scrollView.zoomScale + (_scrollView.maximumZoomScale - _scrollView.minimumZoomScale) / 3.0) animated:YES];
+    }
+
+    if (self.delegate && (YES == [self.delegate respondsToSelector:@selector(imageDoubleTapped:)])) {
+        [self.delegate imageDoubleTapped:self];
     }
 }
 

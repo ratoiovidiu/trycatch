@@ -39,13 +39,18 @@
         [_scrollView addSubview:_imageView];
 
         UITapGestureRecognizer *singleTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scrollViewTapped)];
+        singleTapRecognizer.delaysTouchesBegan = YES;
         singleTapRecognizer.numberOfTapsRequired = 1;
         singleTapRecognizer.numberOfTouchesRequired = 1;
-        [_scrollView addGestureRecognizer:singleTapRecognizer];
 
         UITapGestureRecognizer *doubleTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scrollViewDoubleTapped)];
+        doubleTapRecognizer.delaysTouchesBegan = YES;
         doubleTapRecognizer.numberOfTapsRequired = 2;
         doubleTapRecognizer.numberOfTouchesRequired = 1;
+
+        [singleTapRecognizer requireGestureRecognizerToFail:doubleTapRecognizer];
+
+        [_scrollView addGestureRecognizer:singleTapRecognizer];
         [_scrollView addGestureRecognizer:doubleTapRecognizer];
 
         _activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];

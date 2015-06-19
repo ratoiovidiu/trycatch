@@ -1,0 +1,78 @@
+Flickr credentials:
+    AppName:    Browse Photos
+    Key:        59cd6086d178dd3fd0c775bce4371176
+    Secret:     84e48c7c0adf19ba
+
+
+Search for photos:
+
+API Documentation:      https://www.flickr.com/services/api/flickr.photos.search.html
+
+https://api.flickr.com/services/rest/?api_key={api-key}&method=flickr.photos.search&format=json&text={searched-text}&per_page={number-of-items-per-page}&page={current-page-number}
+
+URL Example:
+    https://api.flickr.com/services/rest/?api_key=59cd6086d178dd3fd0c775bce4371176&method=flickr.photos.search&format=json&text=Party&per_page=10&page=1
+
+Response:
+{
+    "photos": {
+    "page": 1,
+    "pages": 22109,
+    "perpage": 10,
+    "total": "221089",
+    "photo": [
+        {
+            "id": "18480735749",
+            "owner": "11696418@N00",
+            "secret": "ffc9482b39",
+            "server": "401",
+            "farm": 1,
+            "title": "Party boys",
+            "ispublic": 1,
+            "isfriend": 0,
+            "isfamily": 0
+        },
+
+
+        ....
+
+
+    ]
+
+}
+
+
+Computing image URL:
+
+API Documentation:      https://www.flickr.com/services/api/misc.urls.html
+
+https://farm{farm-id}.staticflickr.com/{server-id}/{id}_{secret}_[mstzb].jpg
+https://farm{farm-id}.staticflickr.com/{server-id}/{id}_{secret}.jpg
+
+Size classes:
+    s   small square 75x75
+    q   large square 150x150
+    t   thumbnail, 100 on longest side
+    m   small, 240 on longest side
+    n   small, 320 on longest side
+    h   large 1600, 1600 on longest side (†)
+    k   large 2048, 2048 on longest side (†)
+
+(†) Those photos only exist after March 1st 2012.    
+
+Example:
+    https://farm1.staticflickr.com/552/18044772823_ac0f526788_n.jpg
+    https://farm1.staticflickr.com/552/18044772823_ac0f526788_q.jpg
+    https://farm1.staticflickr.com/552/18044772823_ac0f526788.jpg
+
+    {
+        "id": "18044772823",
+        "owner": "127587923@N08",
+        "secret": "ac0f526788",
+        "server": "552",
+        "farm": 1,
+        "title": "D4S_1301",
+        "ispublic": 1,
+        "isfriend": 0,
+        "isfamily": 0
+    },

@@ -1,0 +1,11 @@
+source 'https://github.com/CocoaPods/Specs.git'
+
+platform :ios, "7.0"
+
+xcodeproj 'FlickrSearch'
+
+inhibit_all_warnings!
+
+link_with ['FlickrSearch']
+
+pod 'AFNetworking',        '~> 2.5.0'

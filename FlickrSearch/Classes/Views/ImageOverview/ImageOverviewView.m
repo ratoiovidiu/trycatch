@@ -134,7 +134,10 @@
 
     switch (_layoutType) {
         case LT_ListOnly: {
-            _cvImageOverview.frame = frame;
+            _cvImageOverview.frame = CGRectMake(CGRectGetMinX(frame),
+                                                CGRectGetMinY(frame) + 44.0,
+                                                CGRectGetWidth(frame),
+                                                CGRectGetHeight(frame) - 44.0);
             _cvImageOverview.backgroundColor = [UIColor clearColor];
             _ivFullImage.frame = CGRectZero;
             _btnCloseDetailsLayout.frame = CGRectZero;

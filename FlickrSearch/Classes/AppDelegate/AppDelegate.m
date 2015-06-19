@@ -24,7 +24,6 @@
 
     ImageSearchController *ctrl = [[ImageSearchController alloc] init];
     UINavigationController *navCtrl = [[UINavigationController alloc] initWithRootViewController:ctrl];
-    [navCtrl setNavigationBarHidden:YES];
 
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor whiteColor];

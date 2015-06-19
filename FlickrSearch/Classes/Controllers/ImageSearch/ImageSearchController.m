@@ -11,7 +11,7 @@
 
 #import "ImageOverviewController.h"
 
-@interface ImageSearchController ()
+@interface ImageSearchController () <UITextFieldDelegate>
 
 @end
 
@@ -21,6 +21,8 @@
     ImageSearchView *pageView = [[ImageSearchView alloc] initWithFrame:CGRectZero];
     pageView.ivBackground.image = [UIImage imageNamed:@"background.png"];
 
+    pageView.tfSearch.delegate = self;
+
     [pageView.btnSearch setTitle:NSLocalizedString(@"Search", nil) forState:UIControlStateNormal];
     [pageView.btnSearch addTarget:self action:@selector(btnSearch_Touched) forControlEvents:UIControlEventTouchUpInside];
 
@@ -29,6 +31,11 @@
     pageView.ivBackground.userInteractionEnabled = YES;
 
     self.view = pageView;
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self.navigationController setNavigationBarHidden:YES];
 }
 
 - (void)stopTextEditing {
@@ -46,9 +53,19 @@
         ImageOverviewController *ctrl = [[ImageOverviewController alloc] init];
         ctrl.searchText = searchText;
         [self.navigationController pushViewController:ctrl animated:YES];
-
-        NSLog(@"TODO * started Search");
     }
+}
+
+#pragma mark - UITextFieldDelegate
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    ImageSearchView *pageView = (ImageSearchView *)self.view;
+    if (textField == pageView.tfSearch) {
+        [self btnSearch_Touched];
+        [self stopTextEditing];
+    }
+
+    return YES;
 }
 
 @end

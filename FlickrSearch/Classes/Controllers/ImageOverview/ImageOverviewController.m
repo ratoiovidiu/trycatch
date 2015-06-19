@@ -47,13 +47,15 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+    [self fixNavigationBar];
+
     __weak typeof(self) weakSelf = self;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [weakSelf btnFetchData_Touched];
+        [weakSelf startInitialDownload];
     });
 }
 
-- (void)btnFetchData_Touched {
+- (void)startInitialDownload {
     self.imageDataNextRequestedPage = NSIntegerMin;
     self.imageDataCurrentPage = 0;
     self.imageDataTotalPages = NSIntegerMax;
@@ -67,6 +69,19 @@
 }
 
 #pragma mark - Private Methods
+
+- (void)fixNavigationBar {
+    ImageOverviewView *pageView = (ImageOverviewView *)self.view;
+    if (LT_ListOnly == pageView.layoutType) {
+        [self.navigationController setNavigationBarHidden:NO animated:YES];
+        [UIView animateWithDuration:UINavigationControllerHideShowBarDuration animations:^{
+            [self.navigationController setNavigationBarHidden:NO animated:YES];
+            [pageView layoutSubviews];
+        }];
+    } else {
+        [self.navigationController setNavigationBarHidden:YES animated:YES];
+    }
+}
 
 - (void)downloadLiveDataForPage:(NSInteger)currentPage {
     NSInteger nextPageNumber = (1 + currentPage);
@@ -114,6 +129,7 @@
 #pragma mark - UIButton actions
 
 - (void)btnCloseDetailsLayout_Touched {
+    __weak typeof(self) weakSelf = self;
     __weak ImageOverviewView *pageView = (ImageOverviewView *)self.view;
 
     NSIndexPath *selectedIndex = nil;
@@ -123,6 +139,7 @@
     }
 
     [pageView setLayoutType:LT_ListOnly animated:YES completion:^{
+        [weakSelf fixNavigationBar];
         if (nil != selectedIndex) {
             [pageView.cvImageOverview scrollToItemAtIndexPath:selectedIndex
                                              atScrollPosition:(UICollectionViewScrollPositionCenteredVertically | UICollectionViewScrollPositionCenteredHorizontally)
@@ -218,6 +235,7 @@
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    __weak typeof(self) weakSelf = self;
     __weak ImageOverviewView *pageView = (ImageOverviewView *)self.view;
 
     if (collectionView == pageView.cvImageOverview) {
@@ -228,6 +246,8 @@
 
                 BOOL animate = (LT_Details == pageView.layoutType);
                 [pageView setLayoutType:LT_Details animated:(!animate) completion:^{
+                    [weakSelf fixNavigationBar];
+
                     NSIndexPath *selectedIndex = nil;
                     NSArray *selectedItems = [pageView.cvImageOverview indexPathsForSelectedItems];
                     if (0 != selectedItems.count) {

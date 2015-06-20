@@ -10,10 +10,15 @@
 
 #import "UIImageView+AFNetworking.h"
 
+#import "UIDevice+Additions.h"
+
+#define kTITLE_HEIGHT (IS_IPAD ? 100 : 80)
+
 @interface CustomImageView () <UIScrollViewDelegate>
 
 @property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) UIImageView *imageView;
+@property (nonatomic, strong) UILabel *lblTitle;
 
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
 
@@ -37,6 +42,18 @@
         _imageView = [[UIImageView alloc] initWithFrame:CGRectZero];
         _imageView.backgroundColor = [UIColor clearColor];
         [_scrollView addSubview:_imageView];
+
+        _lblTitle = [[UILabel alloc] initWithFrame:CGRectZero];
+        _lblTitle.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.2];
+        _lblTitle.textAlignment = NSTextAlignmentCenter;
+        _lblTitle.adjustsFontSizeToFitWidth = YES;
+        _lblTitle.minimumScaleFactor = 0.7;
+        _lblTitle.font = [UIFont boldSystemFontOfSize:20.0];
+        _lblTitle.numberOfLines = 0;
+        _lblTitle.shadowColor = [UIColor whiteColor];
+        _lblTitle.shadowOffset = CGSizeMake(1.0, 1.0);
+        _lblTitle.layer.shadowRadius = 10.0;
+        [self addSubview:_lblTitle];
 
         _activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
         _activityIndicator.backgroundColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.5];
@@ -89,6 +106,9 @@
     _scrollView.hidden = YES;
     _activityIndicator.hidden = NO;
     [_activityIndicator startAnimating];
+
+    _lblTitle.hidden = (IT_Large != sizeType);
+    _lblTitle.text = imageInfo.title;
 
     NSURL *url = nil;
     switch (sizeType) {
@@ -174,6 +194,11 @@
     _imageView.frame = frame;
     _scrollView.frame = frame;
     _activityIndicator.frame = frame;
+
+    _lblTitle.frame = CGRectMake(0.0,
+                                 0.0,
+                                 CGRectGetWidth(frame),
+                                 kTITLE_HEIGHT);
 
     _scrollView.contentSize = _imageView.bounds.size;
     _scrollView.contentInset = UIEdgeInsetsZero;
